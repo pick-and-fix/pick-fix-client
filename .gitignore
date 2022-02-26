@@ -10,5 +10,8 @@ npm-debug.*
 *.orig.*
 web-build/
 
+environment.js
+.husky/
+
 # macOS
 .DS_Store
