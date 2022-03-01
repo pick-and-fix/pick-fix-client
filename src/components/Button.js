@@ -18,13 +18,13 @@ const StyledText = styled.Text`
   color: #0a80ae;
 `;
 
-function StyledButton({ onPress, title, width, height, size }) {
+const StyledButton = ({ onPress, title, width, height, size }) => {
   return (
     <ButtonContainer onPress={onPress} width={width} height={height}>
       <StyledText size={size}>{title}</StyledText>
     </ButtonContainer>
   );
-}
+};
 
 StyledButton.propTypes = {
   onPress: PropTypes.func,
