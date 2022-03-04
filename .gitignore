@@ -12,6 +12,7 @@ web-build/
 
 environment.js
 .husky/
+google-services.json
 
 # macOS
 .DS_Store
