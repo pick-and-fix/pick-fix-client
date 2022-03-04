@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "scheme": "myapp",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -23,10 +24,24 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.project.pickfix",
+      "googleServicesFile": "./google-services.json"
+      
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "config": {
+        "firebase": {
+          "apiKey": "AIzaSyAimXj7LjOJHyI7L3g8ni2QUjDkUMucN6U",
+          "authDomain": "pick-fix.firebaseapp.com",
+          "projectId": "pick-fix",
+          "storageBucket": "pick-fix.appspot.com",
+          "messagingSenderId": "720334971707",
+          "appId": "1:720334971707:web:b24494ccd321d031f24d1e",
+          "measurementId": "G-TWDNXKJ5S7"
+        }
+      }
     }
   }
 }
