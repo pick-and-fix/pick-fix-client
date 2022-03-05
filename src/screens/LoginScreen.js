@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useSetRecoilState } from "recoil";
-import axios from "axios";
 import asyncStorage from "@react-native-async-storage/async-storage";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
@@ -10,13 +9,14 @@ import {
   GoogleAuthProvider,
   signInWithCredential,
 } from "firebase/auth";
-import { StyleSheet, Button, View } from "react-native";
+import { StyleSheet, Button, View, Text } from "react-native";
 import PropTypes from "prop-types";
 
 import getEnvVars from "../../environment";
 import { getLogin, getUserInfo } from "../../util/api/user";
 import { firebaseConfig } from "../config/firebaseConfig";
 import { userState } from "../states/userState";
+import axios from "../config/axiosConfig";
 
 const { REACT_NATIVE_ANDROID_CLIENT_ID } = getEnvVars();
 
@@ -30,12 +30,14 @@ export default function LoginScreen({ navigation }) {
 
   const checkAccessToken = async () => {
     try {
+      const accessToken = await asyncStorage.getItem("accessToken");
       const userId = await asyncStorage.getItem("userId");
 
       if (!userId) return;
 
       if (userId) {
         const userInfo = await getUserInfo(userId);
+        axios.defaults.headers.Authorization = `Bearer ${accessToken}`;
 
         setUserState({
           email: userInfo.email,
@@ -91,6 +93,7 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.loginText}>Login</Text>
       <Button
         style={styles.loginButton}
         disabled={!request}
@@ -106,14 +109,17 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#D3EDF7",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-evenly",
+  },
+  loginText: {
+    fontSize: 60,
+    color: "#0A80AE",
   },
   loginButton: {
-    width: 120,
+    width: 80,
     padding: 5,
-    alignItems: "center",
     justifyContent: "center",
   },
 });
