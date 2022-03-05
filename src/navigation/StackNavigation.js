@@ -24,8 +24,22 @@ const StackNavigator = () => {
   }, []);
 
   return (
-    <Stack.Navigator initialRouteName={user ? "PlanList" : "Login"}>
-      <Stack.Screen name="Login" component={LoginScreen} />
+    <Stack.Navigator
+      initialRouteName={user ? "PlanList" : "Login"}
+      screenOptions={{
+        headerTitle: "PICK & FIX",
+        headerTitleAlign: "center",
+        headerTintColor: "#0A80AE",
+        headerStyle: {
+          backgroundColor: "#D3EDF7",
+        },
+      }}
+    >
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="PlanList" component={PlanListScreen} />
       <Stack.Screen name="PlanDetail" component={PlanDetailScreen} />
     </Stack.Navigator>
