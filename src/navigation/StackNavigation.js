@@ -1,19 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
+import asyncStorage from "@react-native-async-storage/async-storage";
 
 import LoginScreen from "../screens/LoginScreen";
 import PlanListScreen from "../screens/PlanListScreen";
-import asyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect } from "react/cjs/react.development";
+import PlanDetailScreen from "../screens/PlanDetailScreen";
 
 const Stack = createStackNavigator();
 
-export const StackNavigator = () => {
+const StackNavigator = () => {
   const [user, setUser] = useState("");
 
   const checkUser = async () => {
     const userId = await asyncStorage.getItem("userId");
-    setUser(userId);
+
+    if (userId) {
+      setUser(userId);
+    }
   };
 
   useEffect(() => {
@@ -21,12 +24,12 @@ export const StackNavigator = () => {
   }, []);
 
   return (
-    <Stack.Navigator>
-      {!user ? (
-        <Stack.Screen name="Login" component={LoginScreen} />
-      ) : (
-        <Stack.Screen name="PlanList" component={PlanListScreen} />
-      )}
+    <Stack.Navigator initialRouteName={user ? "PlanList" : "Login"}>
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="PlanList" component={PlanListScreen} />
+      <Stack.Screen name="PlanDetail" component={PlanDetailScreen} />
     </Stack.Navigator>
   );
 };
+
+export default StackNavigator;
