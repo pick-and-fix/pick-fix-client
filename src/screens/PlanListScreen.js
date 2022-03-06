@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import asyncStorage from "@react-native-async-storage/async-storage";
 import PropTypes from "prop-types";
 
 import { getPlanList } from "../../util/api/planList";
@@ -14,10 +15,20 @@ export default function PlanListScreen({ navigation }) {
 
   useEffect(() => {
     const getPlans = async () => {
-      const planList = await getPlanList(user.userId);
+      try {
+        const planList = await getPlanList(user.userId);
 
-      setPlans(planList);
+        setPlans(planList.data);
+      } catch (err) {
+        alert("error");
+        asyncStorage.clear();
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Login" }],
+        });
+      }
     };
+
     getPlans();
   }, []);
 
@@ -117,5 +128,6 @@ const styles = StyleSheet.create({
 PlanListScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
+    reset: PropTypes.func,
   }).isRequired,
 };

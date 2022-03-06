@@ -2,13 +2,13 @@ import React from "react";
 import { RecoilRoot } from "recoil";
 import { NavigationContainer } from "@react-navigation/native";
 
-import StackNavigator from "./src/navigation/StackNavigation";
+import DrawerNavigator from "./src/navigation/DrawerNavigator";
 
 export default function App() {
   return (
     <RecoilRoot>
       <NavigationContainer>
-        <StackNavigator />
+        <DrawerNavigator />
       </NavigationContainer>
     </RecoilRoot>
   );
