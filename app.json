@@ -26,7 +26,8 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.project.pickfix",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      }
       
     },
     "web": {

@@ -6,10 +6,11 @@ import LoginScreen from "../screens/LoginScreen";
 import PlanListScreen from "../screens/PlanListScreen";
 import PlanDetailScreen from "../screens/PlanDetailScreen";
 import MyPickScreen from "../screens/MyPickScreen";
+import NewMyPick from "../screens/NewMyPick";
 
 const Main = createStackNavigator();
 
-const MainStack = () => {
+export const MainStack = () => {
   const [user, setUser] = useState("");
 
   const checkUser = async () => {
@@ -43,16 +44,19 @@ const MainStack = () => {
 
 const MyPick = createStackNavigator();
 
-const MyPickStack = () => {
+export const MyPickStack = () => {
   return (
-    <MyPick.Navigator>
+    <MyPick.Navigator initialRouteName="MyPicks">
       <MyPick.Screen
-        name="MyPickScreen"
+        name="MyPicks"
         component={MyPickScreen}
         options={{ title: "My Pick" }}
+      />
+      <MyPick.Screen
+        name="NewMyPick"
+        component={NewMyPick}
+        options={{ title: "New My Pick" }}
       />
     </MyPick.Navigator>
   );
 };
-
-export { MainStack, MyPickStack };
