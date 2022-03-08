@@ -13,6 +13,7 @@ web-build/
 environment.js
 .husky/
 google-services.json
+.idea/
 
 # macOS
 .DS_Store

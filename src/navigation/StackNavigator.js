@@ -6,7 +6,7 @@ import LoginScreen from "../screens/LoginScreen";
 import PlanListScreen from "../screens/PlanListScreen";
 import PlanDetailScreen from "../screens/PlanDetailScreen";
 import MyPickScreen from "../screens/MyPickScreen";
-import NewMyPick from "../screens/NewMyPick";
+import NewMyPickScreen from "../screens/NewMyPickScreen";
 
 const Main = createStackNavigator();
 
@@ -54,7 +54,7 @@ export const MyPickStack = () => {
       />
       <MyPick.Screen
         name="NewMyPick"
-        component={NewMyPick}
+        component={NewMyPickScreen}
         options={{ title: "New My Pick" }}
       />
     </MyPick.Navigator>
