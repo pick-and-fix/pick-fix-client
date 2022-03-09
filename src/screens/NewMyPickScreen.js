@@ -10,6 +10,7 @@ import getEnvVars from "../../environment";
 import { userState } from "../states/userState";
 import { pickState } from "../states/pickState";
 import SaveButton from "../components/Button";
+import { saveNewPick } from "../../util/api/myPick";
 
 const { REACT_NATIVE_ANDROID_GOOGLE_API_KEY } = getEnvVars();
 
@@ -20,12 +21,34 @@ export default function NewMyPickScreen({ navigation }) {
 
   const [restaurantName, setRestaurantName] = useState("");
   const [address, setAddress] = useState("");
-  const [SearchLatitude, setSearchLatitude] = useState("37.570019624006946");
-  const [SearchLongitude, setSearchLongitude] = useState("126.97613747407789");
+  const [searchLatitude, setSearchLatitude] = useState("37.570019624006946");
+  const [searchLongitude, setSearchLongitude] = useState("126.97613747407789");
   const [ratingOpen, setRatingOpen] = useState(false);
   const [typeOpen, setTypeOpen] = useState(false);
   const [ratingValue, setRatingValue] = useState(null);
   const [typeValue, setTypeValue] = useState(null);
+
+  const onSaveButtonClick = async () => {
+    const newPick = {
+      author: userId,
+      name: restaurantName,
+      address: address.split("대한민국 ")[1],
+      rating: ratingValue,
+      type: typeValue,
+      image: "",
+      location: [searchLatitude, searchLongitude],
+    };
+
+    try {
+      const res = await saveNewPick({ userId, newPick });
+
+      if (res.result === "success") {
+        navigation.navigate("MyPicks");
+      }
+    } catch (err) {
+      alert("error");
+    }
+  };
 
   return (
     <View style={styles.screenContainer}>
@@ -59,8 +82,8 @@ export default function NewMyPickScreen({ navigation }) {
       <MapView
         style={styles.map}
         region={{
-          latitude: Number(SearchLatitude),
-          longitude: Number(SearchLongitude),
+          latitude: Number(searchLatitude),
+          longitude: Number(searchLongitude),
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         }}
@@ -96,8 +119,8 @@ export default function NewMyPickScreen({ navigation }) {
         })}
         <Marker
           coordinate={{
-            latitude: Number(SearchLatitude),
-            longitude: Number(SearchLongitude),
+            latitude: Number(searchLatitude),
+            longitude: Number(searchLongitude),
           }}
         />
       </MapView>
@@ -163,7 +186,13 @@ export default function NewMyPickScreen({ navigation }) {
             borderColor: "#cdcecf",
           }}
         />
-        <SaveButton width={100} height={17} title="SAVE" size={20} />
+        <SaveButton
+          width={100}
+          height={17}
+          title="SAVE"
+          size={20}
+          onPress={onSaveButtonClick}
+        />
       </View>
     </View>
   );
