@@ -1,5 +1,13 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View, Dimensions, Image } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  Image,
+  Modal,
+  Pressable,
+  Text,
+} from "react-native";
 import { useRecoilState, useRecoilValue } from "recoil";
 import PropTypes from "prop-types";
 import MapView, { Marker } from "react-native-maps";
@@ -8,11 +16,15 @@ import { getMyPicks } from "../../util/api/myPick";
 import { userState } from "../states/userState";
 import NewButton from "../components/Button";
 import { pickState } from "../states/pickState";
+import { useState } from "react/cjs/react.development";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function MyPickScreen({ navigation }) {
   const user = useRecoilValue(userState);
   const userId = user.userId;
   const [picks, setPicks] = useRecoilState(pickState);
+  const [clickedPick, setClickedPick] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const getMyPickApi = async () => {
@@ -28,13 +40,69 @@ export default function MyPickScreen({ navigation }) {
     getMyPickApi();
   }, []);
 
-  const onNewButtonClick = (userId) => {
+  const handleNewButtonClick = (userId) => {
     navigation.navigate("NewMyPick", { userId: userId });
+  };
+
+  const handleMarkerClick = (pickId) => {
+    Object.entries(picks).map(([id, pick]) => {
+      if (pickId === id) {
+        setClickedPick(pick);
+        setModalVisible(true);
+      }
+    });
   };
 
   return (
     <>
       <View style={styles.container}>
+        <Modal
+          animationType="fade"
+          visible={modalVisible}
+          transparent={true}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Pressable
+                style={styles.button}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={styles.buttonTextStyle}>X</Text>
+              </Pressable>
+              <ScrollView>
+                <Text style={styles.pickText}>
+                  <Text style={styles.formText}>Name: </Text>
+                  {clickedPick?.name}
+                </Text>
+                <Text style={styles.pickText}>
+                  <Text style={styles.formText}>Address: </Text>
+                  {clickedPick?.address}
+                </Text>
+                <Text style={styles.pickText}>
+                  <Text style={styles.formText}>Rating: </Text>
+                  {clickedPick?.rating}
+                </Text>
+                <Text style={styles.pickText}>
+                  <Text style={styles.formText}>Type: </Text>
+                  {clickedPick?.type}
+                </Text>
+                {clickedPick?.image ? (
+                  <Image
+                    source={{
+                      uri: clickedPick?.image,
+                    }}
+                    style={{ width: 290, height: 200 }}
+                  />
+                ) : (
+                  <Text> </Text>
+                )}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
         <MapView
           style={styles.map}
           initialRegion={{
@@ -68,6 +136,7 @@ export default function MyPickScreen({ navigation }) {
                 key={id}
                 coordinate={{ latitude: latitude, longitude: longitude }}
                 title={pick.name}
+                onPress={(ev) => handleMarkerClick(id)}
               >
                 <Image source={image} style={{ width: 30, height: 30 }} />
               </Marker>
@@ -81,7 +150,7 @@ export default function MyPickScreen({ navigation }) {
           height={40}
           title="NEW"
           size={20}
-          onPress={() => onNewButtonClick(userId)}
+          onPress={() => handleNewButtonClick(userId)}
         />
       </View>
     </>
@@ -104,6 +173,51 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 240,
     backgroundColor: "#fff",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    width: 350,
+    height: 350,
+    margin: 20,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    padding: 15,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    width: 40,
+    height: 40,
+    marginLeft: 260,
+    borderRadius: 100,
+    padding: 10,
+    elevation: 2,
+    backgroundColor: "#d3edf7",
+  },
+  buttonTextStyle: {
+    color: "#898989",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  pickText: {
+    marginBottom: 10,
+    color: "#898989",
+  },
+  formText: {
+    fontSize: 15,
+    color: "#0a80ae",
   },
 });
 
