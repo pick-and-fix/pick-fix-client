@@ -5,3 +5,11 @@ export const getMyPicks = async (userId) => {
 
   return response.data;
 };
+
+export const saveNewPick = async ({ userId, newPick }) => {
+  const response = await axios.post(`users/${userId}/mypick/new`, {
+    newPick,
+  });
+
+  return response.data;
+};

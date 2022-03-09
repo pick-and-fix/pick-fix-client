@@ -28,7 +28,7 @@ export default function MyPickScreen({ navigation }) {
     getMyPickApi();
   }, []);
 
-  const navigateNewMyPick = (userId) => {
+  const onNewButtonClick = (userId) => {
     navigation.navigate("NewMyPick", { userId: userId });
   };
 
@@ -81,7 +81,7 @@ export default function MyPickScreen({ navigation }) {
           height={40}
           title="NEW"
           size={20}
-          onPress={() => navigateNewMyPick(userId)}
+          onPress={() => onNewButtonClick(userId)}
         />
       </View>
     </>
