@@ -102,7 +102,7 @@ function MakeAPlanScreen({ navigation }) {
                 index: 0,
                 routes: [
                   {
-                    name: "Main",
+                    name: "PickVote",
                   },
                 ],
               })
