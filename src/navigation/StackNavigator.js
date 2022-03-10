@@ -7,6 +7,8 @@ import PlanListScreen from "../screens/PlanListScreen";
 import PlanDetailScreen from "../screens/PlanDetailScreen";
 import MyPickScreen from "../screens/MyPickScreen";
 import NewMyPickScreen from "../screens/NewMyPickScreen";
+import VoteListScreen from "../screens/VoteListScreen";
+import VoteScreen from "../screens/VoteScreen";
 
 const Main = createStackNavigator();
 
@@ -58,5 +60,24 @@ export const MyPickStack = () => {
         options={{ title: "New My Pick" }}
       />
     </MyPick.Navigator>
+  );
+};
+
+const Vote = createStackNavigator();
+
+export const VoteStack = () => {
+  return (
+    <Vote.Navigator initialRouteName="VoteList">
+      <Vote.Screen
+        name="VoteList"
+        component={VoteListScreen}
+        options={{ title: "Vote List" }}
+      />
+      <Vote.Screen
+        name="Vote"
+        component={VoteScreen}
+        options={{ title: "Vote" }}
+      />
+    </Vote.Navigator>
   );
 };
