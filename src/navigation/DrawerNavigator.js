@@ -26,12 +26,12 @@ const DrawerNavigator = () => {
       <Drawer.Screen
         name="MyPick"
         component={MyPickStack}
-        option={{ drawerLabel: "My Pick" }}
+        options={{ drawerLabel: "My Pick" }}
       />
       <Drawer.Screen
-        name="Make a Plan"
+        name="MakeAPlan"
         component={MakeAPlanScreen}
-        option={{ drawerLabel: "Make a Plan" }}
+        options={{ drawerLabel: "Make a Plan" }}
       />
     </Drawer.Navigator>
   );

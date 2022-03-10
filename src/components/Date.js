@@ -23,7 +23,7 @@ const PlanDate = ({
           onPress={showDatepicker}
           title="DATE"
           width="30"
-          height="50"
+          height="60"
           size="13"
         />
       </View>
@@ -35,7 +35,7 @@ const PlanDate = ({
           onPress={showTimepicker}
           title="TIME"
           width="30"
-          height="50"
+          height="60"
           size="13"
         />
       </View>
@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
     width: 260,
     alignItems: "center",
     marginLeft: 10,
-    // borderWidth: 1,
   },
   dateInlineContainer: {
     flexDirection: "row",
@@ -67,11 +66,11 @@ const styles = StyleSheet.create({
   },
   date: {
     marginLeft: 20,
-    marginRight: 30,
+    marginRight: "20%",
   },
   time: {
     marginLeft: 30,
-    marginRight: 86,
+    marginRight: "42%",
   },
 });
 

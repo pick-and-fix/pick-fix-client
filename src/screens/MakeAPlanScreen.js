@@ -1,29 +1,29 @@
+import { CommonActions } from "@react-navigation/routers";
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Platform,
-  KeyboardAvoidingView,
-} from "react-native";
+import { StyleSheet, View, Text, Platform, Alert } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { TextInput } from "react-native-gesture-handler";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { useRecoilValue } from "recoil";
+import PropTypes from "prop-types";
 
 import getEnvVars from "../../environment";
-import { checkEmail } from "../../util/api/makeAPlan";
+import { checkEmailApi, makeAPlanApi } from "../../util/api/makeAPlan";
 import StyledButton from "../components/Button";
 import PlanDate from "../components/Date";
+import { userState } from "../states/userState";
 
 const { REACT_NATIVE_ANDROID_GOOGLE_API_KEY } = getEnvVars();
 
-export default function MakeAPlanScreen() {
+function MakeAPlanScreen({ navigation }) {
+  const user = useRecoilValue(userState);
+  const userId = user.userId;
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-  // const [place, setPlace] = useState("");
-  // const [latitude, setLatitude] = useState(null);
-  // const [longitude, setLongitude] = useState(null);
+  const [place, setPlace] = useState("");
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
   const [dropOpen, setDropOpen] = useState(false);
   const [pickValue, setPickValue] = useState(null);
   const [email, setEmail] = useState("");
@@ -51,7 +51,7 @@ export default function MakeAPlanScreen() {
 
   const handlePlusButtonClick = async () => {
     try {
-      const user = await checkEmail(email);
+      const user = await checkEmailApi(email);
       setFriendsId([...friendsId, user.data.userId]);
       setFriends([...friends, user.data.name]);
       setEmail("");
@@ -60,14 +60,62 @@ export default function MakeAPlanScreen() {
     }
   };
 
-  // const handleCreateButtonClick = () => {
-  //   console.log("asdf");
-  // };
+  const handleCreateButtonClick = async () => {
+    if (!place) {
+      alert("Select the place");
+
+      return;
+    }
+
+    if (!pickValue) {
+      alert("Select the pick number");
+
+      return;
+    }
+
+    if (!friends.length) {
+      alert("Check the friends email");
+
+      return;
+    }
+
+    const newPlan = {
+      creator: userId,
+      place: place,
+      placeLocation: [latitude, longitude],
+      date: date,
+      friends: friendsId,
+      pickNumber: pickValue,
+      isVoted: false,
+      isFixed: false,
+    };
+
+    const response = await makeAPlanApi({ userId, newPlan });
+
+    if (response.result === "success") {
+      Alert.alert("Success👍🏻", "Vote List에서 약속장소를 Pick하세요!", [
+        {
+          text: "OK",
+          onPress: () =>
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [
+                  {
+                    name: "Main",
+                  },
+                ],
+              })
+            ),
+        },
+      ]);
+    }
+  };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+    <View style={styles.container}>
       <View style={styles.mainTextContainer}>
-        <Text style={styles.title}>Make A Plan Screen</Text>
+        <Text style={styles.title}>Make A Plan</Text>
       </View>
       <View style={styles.formContainer}>
         <View style={styles.inlineContainer}>
@@ -89,9 +137,9 @@ export default function MakeAPlanScreen() {
             placeholder="Search"
             fetchDetails={true}
             onPress={(data, details = null) => {
-              // setPlace(data.structured_formatting.main_text);
-              // setLatitude(details.geometry.location.lat);
-              // setLongitude(details.geometry.location.lng);
+              setPlace(data.structured_formatting.main_text);
+              setLatitude(details.geometry.location.lat);
+              setLongitude(details.geometry.location.lng);
             }}
             query={{
               key: REACT_NATIVE_ANDROID_GOOGLE_API_KEY,
@@ -138,8 +186,8 @@ export default function MakeAPlanScreen() {
               animation: "fade",
             }}
             style={{
-              marginLeft: 30,
-              width: "70%",
+              marginLeft: "11%",
+              width: "69%",
               height: 30,
             }}
           />
@@ -158,7 +206,7 @@ export default function MakeAPlanScreen() {
               <View>
                 <StyledButton
                   width={200}
-                  height={70}
+                  height={80}
                   title="+"
                   size={20}
                   onPress={handlePlusButtonClick}
@@ -172,15 +220,17 @@ export default function MakeAPlanScreen() {
             </View>
           </View>
         </View>
-        <StyledButton
-          width={100}
-          height={10}
-          title="CREATE"
-          size={20}
-          // onPress={handleCreateButtonClick}
-        />
+        <View style={{ flex: 1, marginTop: "10%", alignItems: "center" }}>
+          <StyledButton
+            width={80}
+            height={30}
+            title="CREATE"
+            size={20}
+            onPress={handleCreateButtonClick}
+          />
+        </View>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -203,14 +253,13 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 7,
     width: 350,
-    marginTop: "8%",
+    marginTop: "15%",
   },
   inlineContainer: {
-    height: 90,
+    height: "15%",
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
-    borderWidth: 1,
+    marginBottom: "1%",
   },
   circle: {
     width: 10,
@@ -222,17 +271,26 @@ const styles = StyleSheet.create({
   },
   formText: {
     color: "#0A80AE",
-    fontSize: 20,
+    fontSize: 17,
   },
   friendTextInput: {
-    width: "65%",
-    marginLeft: "5%",
+    width: "77%",
     borderBottomWidth: 1,
   },
   friendsContainer: {
-    height: "50%",
+    marginLeft: "10%",
+    height: "45%",
     flexDirection: "row",
     alignItems: "center",
-    borderWidth: 1,
   },
 });
+
+MakeAPlanScreen.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    dispatch: PropTypes.func,
+    reset: PropTypes.func,
+  }).isRequired,
+};
+
+export default MakeAPlanScreen;
