@@ -19,7 +19,7 @@ import { pickState } from "../states/pickState";
 import { useState } from "react/cjs/react.development";
 import { ScrollView } from "react-native-gesture-handler";
 
-export default function MyPickScreen({ navigation }) {
+function MyPickScreen({ navigation }) {
   const user = useRecoilValue(userState);
   const userId = user.userId;
   const [picks, setPicks] = useRecoilState(pickState);
@@ -227,3 +227,5 @@ MyPickScreen.propTypes = {
     reset: PropTypes.func,
   }).isRequired,
 };
+
+export default MyPickScreen;

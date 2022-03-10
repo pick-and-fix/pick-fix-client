@@ -8,7 +8,6 @@ const ButtonContainer = styled.Pressable`
   justify-content: center;
   width: ${(props) => props.width}%;
   height: ${(props) => props.height}%;
-  padding: 5px;
   border: 1px solid #898989;
   border-radius: 15px;
 `;

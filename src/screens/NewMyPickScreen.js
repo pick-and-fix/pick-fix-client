@@ -78,6 +78,7 @@ export default function NewMyPickScreen({ navigation }) {
           },
           listView: { backgroundColor: "#fff" },
         }}
+        debounce={200}
       />
       <MapView
         style={styles.map}

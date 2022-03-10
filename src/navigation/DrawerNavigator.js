@@ -2,6 +2,7 @@ import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import { MainStack, MyPickStack } from "./StackNavigator";
+import MakeAPlanScreen from "../screens/MakeAPlanScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -25,7 +26,12 @@ const DrawerNavigator = () => {
       <Drawer.Screen
         name="MyPick"
         component={MyPickStack}
-        option={{ drawerLabel: "My Pick" }}
+        options={{ drawerLabel: "My Pick" }}
+      />
+      <Drawer.Screen
+        name="MakeAPlan"
+        component={MakeAPlanScreen}
+        options={{ drawerLabel: "Make a Plan" }}
       />
     </Drawer.Navigator>
   );
