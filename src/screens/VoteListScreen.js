@@ -16,7 +16,6 @@ export default function VoteListScreen({ navigation }) {
     const getVoteList = async () => {
       try {
         const voteList = await getVoteListApi(user.userId);
-
         setVotes(voteList.data);
       } catch (err) {
         alert("error");
@@ -27,7 +26,31 @@ export default function VoteListScreen({ navigation }) {
   }, []);
 
   const navigateVotePage = (voteId) => {
-    navigation.navigate("Vote", { voteId: voteId });
+    Object.entries(votes).map(([id, plan]) => {
+      if (voteId === id) {
+        if (!plan.voting.length) {
+          navigation.navigate("Vote", { voteId: voteId });
+
+          return;
+        }
+
+        const isNotVotedUser = plan.voting.every((votedPick) => {
+          return votedPick.id !== user.userId;
+        });
+
+        if (isNotVotedUser) {
+          navigation.navigate("Vote", { voteId: voteId });
+
+          return;
+        }
+
+        if (!isNotVotedUser) {
+          navigation.navigate("VoteResult", { voteId: voteId });
+
+          return;
+        }
+      }
+    });
   };
 
   return (

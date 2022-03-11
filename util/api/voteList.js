@@ -5,3 +5,20 @@ export const getVoteListApi = async (userId) => {
 
   return response.data;
 };
+
+export const getPicksApi = async ({ userId, planId }) => {
+  const response = await axios.get(`/users/${userId}/plan/${planId}/vote`);
+
+  return response.data;
+};
+
+export const postVotePickApi = async ({ userId, planId, vote }) => {
+  const response = await axios.post(
+    `/users/${userId}/plan/${planId}/vote/new`,
+    {
+      vote,
+    }
+  );
+
+  return response.data;
+};

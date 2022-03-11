@@ -9,6 +9,7 @@ import MyPickScreen from "../screens/MyPickScreen";
 import NewMyPickScreen from "../screens/NewMyPickScreen";
 import VoteListScreen from "../screens/VoteListScreen";
 import VoteScreen from "../screens/VoteScreen";
+import VoteResultScreen from "../screens/VoteResultScreen";
 
 const Main = createStackNavigator();
 
@@ -77,6 +78,11 @@ export const VoteStack = () => {
         name="Vote"
         component={VoteScreen}
         options={{ title: "Vote" }}
+      />
+      <Vote.Screen
+        name="VoteResult"
+        component={VoteResultScreen}
+        options={{ title: "Vote Result" }}
       />
     </Vote.Navigator>
   );
