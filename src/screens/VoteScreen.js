@@ -8,17 +8,19 @@ import {
   Modal,
   Pressable,
   ScrollView,
+  Alert,
 } from "react-native";
 import { useRecoilValue } from "recoil";
 import MapView, { Marker } from "react-native-maps";
+import { CommonActions } from "@react-navigation/routers";
 import PropTypes from "prop-types";
 
-import { getPicksApi } from "../../util/api/voteList";
+import { getPicksApi, postVotePickApi } from "../../util/api/voteList";
 import { getMyPicks } from "../../util/api/myPick";
 import VoteButton from "../components/Button";
 import { userState } from "../states/userState";
 
-function VoteScreen({ route }) {
+function VoteScreen({ route, navigation }) {
   const user = useRecoilValue(userState);
   const userId = user.userId;
   const planId = route.params.voteId;
@@ -46,7 +48,32 @@ function VoteScreen({ route }) {
     getPicks();
   }, []);
 
-  const handleVoteButtonClick = (userId) => {};
+  const handleVoteButtonClick = async () => {
+    try {
+      const response = await postVotePickApi({ userId, planId, vote });
+
+      if (response.result === "success") {
+        Alert.alert("Success👍🏻", "투표가 완료되었습니다.", [
+          {
+            text: "OK",
+            onPress: () =>
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [
+                    {
+                      name: "VoteList",
+                    },
+                  ],
+                })
+              ),
+          },
+        ]);
+      }
+    } catch (err) {
+      alert("error");
+    }
+  };
 
   const handleMarkerClick = (pickId) => {
     Object.entries(friendsPicks).map(([id, pick]) => {
@@ -235,7 +262,7 @@ function VoteScreen({ route }) {
           height={8}
           title="VOTE"
           size={20}
-          onPress={() => handleVoteButtonClick(userId)}
+          onPress={() => handleVoteButtonClick()}
         />
       </View>
     </>
@@ -326,6 +353,11 @@ VoteScreen.propTypes = {
     params: PropTypes.shape({
       voteId: PropTypes.string.isRequired,
     }).isRequired,
+  }).isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    dispatch: PropTypes.func,
+    reset: PropTypes.func,
   }).isRequired,
 };
 

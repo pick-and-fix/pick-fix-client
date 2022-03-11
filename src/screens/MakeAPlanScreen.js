@@ -85,7 +85,9 @@ function MakeAPlanScreen({ navigation }) {
       placeLocation: [latitude, longitude],
       date: date,
       friends: friendsId,
+      voting: [],
       pickNumber: pickValue,
+      picks: [],
       isVoted: false,
       isFixed: false,
     };
