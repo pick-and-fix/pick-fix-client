@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { useRecoilState, useRecoilValue } from "recoil";
 import PropTypes from "prop-types";
 
-import { getVoteListApi } from "../../util/api/voteList";
+import { getVoteListApi } from "../../util/api/vote";
 import { userState } from "../states/userState";
 import { voteState } from "../states/voteState";
 import VoteList from "../components/List";

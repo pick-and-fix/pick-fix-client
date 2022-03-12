@@ -15,7 +15,7 @@ import MapView, { Marker } from "react-native-maps";
 import { CommonActions } from "@react-navigation/routers";
 import PropTypes from "prop-types";
 
-import { getPicksApi, postVotePickApi } from "../../util/api/voteList";
+import { getPicksApi, postVotePickApi } from "../../util/api/vote";
 import { getMyPicks } from "../../util/api/myPick";
 import VoteButton from "../components/Button";
 import { userState } from "../states/userState";
@@ -23,6 +23,7 @@ import { userState } from "../states/userState";
 function VoteScreen({ route, navigation }) {
   const user = useRecoilValue(userState);
   const userId = user.userId;
+  const userName = user.name;
   const planId = route.params.voteId;
   const [clickedPick, setClickedPick] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -50,7 +51,12 @@ function VoteScreen({ route, navigation }) {
 
   const handleVoteButtonClick = async () => {
     try {
-      const response = await postVotePickApi({ userId, planId, vote });
+      const response = await postVotePickApi({
+        userId,
+        planId,
+        vote,
+        userName,
+      });
 
       if (response.result === "success") {
         Alert.alert("Success👍🏻", "투표가 완료되었습니다.", [

@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 
 export const voteState = atom({
-  key: "votes",
+  key: "voteList",
   default: {},
 });
