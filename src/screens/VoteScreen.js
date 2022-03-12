@@ -23,7 +23,6 @@ import { userState } from "../states/userState";
 function VoteScreen({ route, navigation }) {
   const user = useRecoilValue(userState);
   const userId = user.userId;
-  const userName = user.name;
   const planId = route.params.voteId;
   const [clickedPick, setClickedPick] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -55,7 +54,6 @@ function VoteScreen({ route, navigation }) {
         userId,
         planId,
         vote,
-        userName,
       });
 
       if (response.result === "success") {
