@@ -22,3 +22,22 @@ export const postVotePickApi = async ({ userId, planId, vote }) => {
 
   return response.data;
 };
+
+export const getVoteResultApi = async ({ userId, planId }) => {
+  const response = await axios.get(
+    `/users/${userId}/plan/${planId}/vote/result`
+  );
+
+  return response.data;
+};
+
+export const saveFinalPickApi = async ({ userId, planId, finalPicks }) => {
+  const response = await axios.post(
+    `/users/${userId}/plan/${planId}/vote/fix`,
+    {
+      finalPicks,
+    }
+  );
+
+  return response.data;
+};
