@@ -10,6 +10,7 @@ const ButtonContainer = styled.Pressable`
   height: ${(props) => props.height}%;
   border: 1px solid #898989;
   border-radius: 15px;
+  background-color: #ffffff;
 `;
 
 const StyledText = styled.Text`
