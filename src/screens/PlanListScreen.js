@@ -53,7 +53,7 @@ export default function PlanListScreen({ navigation }) {
 
         setPlans(planList.data);
       } catch (err) {
-        alert("error");
+        alert(MESSAGE.ERROR);
       }
     };
 

@@ -37,13 +37,6 @@ const StyledMarker = ({ plan, onPressMarker }) => {
             </Marker>
           );
         })}
-      <Marker
-        title={plan?.place}
-        coordinate={{
-          latitude: plan?.placeLocation[0],
-          longitude: plan?.placeLocation[1],
-        }}
-      />
     </>
   );
 };

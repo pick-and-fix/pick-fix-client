@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Modal, Dimensions } from "react-native";
 import { useRecoilValue } from "recoil";
-import MapView from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import PropTypes from "prop-types";
 
 import { planState } from "../states/planState";
@@ -91,6 +91,13 @@ function PlanDetailScreen({ route }) {
           }}
         >
           <StyledMarker plan={plan} onPressMarker={handleMarkerClick} />
+          <Marker
+            title={plan?.place}
+            coordinate={{
+              latitude: plan?.placeLocation[0],
+              longitude: plan?.placeLocation[1],
+            }}
+          />
         </MapView>
         <View style={styles.planDetailContainer}>
           <View style={styles.inlineContainer}>
