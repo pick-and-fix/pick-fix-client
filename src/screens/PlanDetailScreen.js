@@ -8,12 +8,12 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import { planState } from "../states/planState";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { ScrollView } from "react-native-gesture-handler";
+import { useRecoilValue } from "recoil";
 import MapView, { Marker } from "react-native-maps";
+import { ScrollView } from "react-native-gesture-handler";
 import PropTypes from "prop-types";
 
+import { planState } from "../states/planState";
 import StyledButton from "../components/Button";
 import Loading from "../components/Loading";
 
@@ -58,7 +58,7 @@ export default function PlanDetailScreen({ route }) {
       <View style={styles.container}>
         <Modal
           animationType="fade"
-          visible={modalVisible}
+          visible={resultModalVisible}
           transparent={true}
           onRequestClose={() => {
             setResultModalVisible(!resultModalVisible);
@@ -68,14 +68,25 @@ export default function PlanDetailScreen({ route }) {
             <View style={styles.modalView}>
               <Pressable
                 style={styles.button}
-                onPress={() => setModalVisible(!modalVisible)}
+                onPress={() => setResultModalVisible(!resultModalVisible)}
               >
                 <Text style={styles.buttonTextStyle}>X</Text>
               </Pressable>
-              <ScrollView>
+              <View style={{ marginTop: "7%" }}>
+                <Text
+                  style={{
+                    marginBottom: "5%",
+                    textAlign: "center",
+                    fontSize: 23,
+                    color: "#0a80ae",
+                  }}
+                >
+                  VOTE RESULT
+                </Text>
                 {plan &&
                   plan.voting.map((votes) => {
                     const places = votes.vote;
+
                     return (
                       <View key={votes.id} style={{ margin: 10 }}>
                         <Text>
@@ -84,9 +95,9 @@ export default function PlanDetailScreen({ route }) {
                             return (
                               <Text
                                 key={place.id}
-                                style={{ fontSize: 20, paddingRight: 20 }}
+                                style={{ fontSize: 17, paddingRight: 20 }}
                               >
-                                {place.info.name}
+                                📍 {place.info.name}
                               </Text>
                             );
                           })}
@@ -94,7 +105,7 @@ export default function PlanDetailScreen({ route }) {
                       </View>
                     );
                   })}
-              </ScrollView>
+              </View>
             </View>
           </View>
         </Modal>
