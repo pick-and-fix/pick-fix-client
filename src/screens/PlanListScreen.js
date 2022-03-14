@@ -18,7 +18,7 @@ export default function PlanListScreen({ navigation }) {
   const [plans, setPlans] = useRecoilState(planState);
 
   useEffect(() => {
-    const checkAccessToken = async () => {
+    const getPlans = async () => {
       try {
         const accessToken = await asyncStorage.getItem("accessToken");
         const userId = await asyncStorage.getItem("userId");
@@ -36,18 +36,6 @@ export default function PlanListScreen({ navigation }) {
             userId: userId,
           });
         }
-      } catch (err) {
-        alert(MESSAGE.ERROR);
-      }
-    };
-
-    checkAccessToken();
-  }, []);
-
-  useEffect(() => {
-    const getPlans = async () => {
-      try {
-        const userId = await asyncStorage.getItem("userId");
 
         const planList = await getPlanList(userId);
 
