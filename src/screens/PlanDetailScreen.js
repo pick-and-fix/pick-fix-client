@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Modal,
-  Pressable,
-  Image,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, View, Text, Modal, Dimensions } from "react-native";
 import { useRecoilValue } from "recoil";
-import MapView, { Marker } from "react-native-maps";
-import { ScrollView } from "react-native-gesture-handler";
+import MapView from "react-native-maps";
 import PropTypes from "prop-types";
 
 import { planState } from "../states/planState";
 import StyledButton from "../components/Button";
 import Loading from "../components/Loading";
+import ResultModalDetail from "../components/ResultModal";
+import MarkerModalDetail from "../components/MarkerModal";
+import StyledMarker from "../components/Marker";
 
-export default function PlanDetailScreen({ route }) {
+function PlanDetailScreen({ route }) {
   const planId = route.params.planId;
+
   const planList = useRecoilValue(planState);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [resultModalVisible, setResultModalVisible] = useState(false);
   const [clickedPick, setClickedPick] = useState(null);
@@ -34,6 +30,7 @@ export default function PlanDetailScreen({ route }) {
       });
     }
   }, []);
+
   const date = new Date(plan?.date);
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
@@ -64,50 +61,11 @@ export default function PlanDetailScreen({ route }) {
             setResultModalVisible(!resultModalVisible);
           }}
         >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Pressable
-                style={styles.button}
-                onPress={() => setResultModalVisible(!resultModalVisible)}
-              >
-                <Text style={styles.buttonTextStyle}>X</Text>
-              </Pressable>
-              <View style={{ marginTop: "7%" }}>
-                <Text
-                  style={{
-                    marginBottom: "5%",
-                    textAlign: "center",
-                    fontSize: 23,
-                    color: "#0a80ae",
-                  }}
-                >
-                  VOTE RESULT
-                </Text>
-                {plan &&
-                  plan.voting.map((votes) => {
-                    const places = votes.vote;
-
-                    return (
-                      <View key={votes.id} style={{ margin: 10 }}>
-                        <Text>
-                          ✅
-                          {places.map((place) => {
-                            return (
-                              <Text
-                                key={place.id}
-                                style={{ fontSize: 17, paddingRight: 20 }}
-                              >
-                                📍 {place.info.name}
-                              </Text>
-                            );
-                          })}
-                        </Text>
-                      </View>
-                    );
-                  })}
-              </View>
-            </View>
-          </View>
+          <ResultModalDetail
+            onPressModal={setResultModalVisible}
+            modalVisible={resultModalVisible}
+            plan={plan}
+          />
         </Modal>
         <Modal
           animationType="fade"
@@ -117,44 +75,11 @@ export default function PlanDetailScreen({ route }) {
             setModalVisible(!modalVisible);
           }}
         >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Pressable
-                style={styles.button}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={styles.buttonTextStyle}>X</Text>
-              </Pressable>
-              <ScrollView>
-                <Text style={styles.pickText}>
-                  <Text style={styles.formText}>Name: </Text>
-                  {clickedPick?.name}
-                </Text>
-                <Text style={styles.pickText}>
-                  <Text style={styles.formText}>Address: </Text>
-                  {clickedPick?.address}
-                </Text>
-                <Text style={styles.pickText}>
-                  <Text style={styles.formText}>Rating: </Text>
-                  {clickedPick?.rating}
-                </Text>
-                <Text style={styles.pickText}>
-                  <Text style={styles.formText}>Type: </Text>
-                  {clickedPick?.type}
-                </Text>
-                {clickedPick?.image ? (
-                  <Image
-                    source={{
-                      uri: clickedPick?.image,
-                    }}
-                    style={{ width: 290, height: 200 }}
-                  />
-                ) : (
-                  <Text> </Text>
-                )}
-              </ScrollView>
-            </View>
-          </View>
+          <MarkerModalDetail
+            onPressModal={setModalVisible}
+            modalVisible={modalVisible}
+            clickedPick={clickedPick}
+          />
         </Modal>
         <MapView
           style={styles.map}
@@ -165,43 +90,7 @@ export default function PlanDetailScreen({ route }) {
             longitudeDelta: 0.05,
           }}
         >
-          {plan &&
-            Object.entries(plan?.picks).map(([id, pick]) => {
-              const latitude = pick.location[0];
-              const longitude = pick.location[1];
-              let image;
-
-              switch (pick.type) {
-                case "meal":
-                  image = require("../../assets/meal.png");
-                  break;
-                case "pup":
-                  image = require("../../assets/pup.png");
-                  break;
-                case "cafe":
-                  image = require("../../assets/cafe.png");
-                  break;
-                default:
-                  image = require("../../assets/pin.png");
-              }
-
-              return (
-                <Marker
-                  key={id}
-                  coordinate={{ latitude: latitude, longitude: longitude }}
-                  title={pick.name}
-                  onPress={(ev) => handleMarkerClick(id)}
-                >
-                  <Image source={image} style={{ width: 30, height: 30 }} />
-                </Marker>
-              );
-            })}
-          <Marker
-            coordinate={{
-              latitude: plan?.placeLocation[0],
-              longitude: plan?.placeLocation[1],
-            }}
-          />
+          <StyledMarker plan={plan} onPressMarker={handleMarkerClick} />
         </MapView>
         <View style={styles.planDetailContainer}>
           <View style={styles.inlineContainer}>
@@ -269,43 +158,6 @@ const styles = StyleSheet.create({
     marginTop: 240,
     backgroundColor: "#fff",
   },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    width: 350,
-    height: 350,
-    margin: 20,
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    padding: 15,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    width: 40,
-    height: 40,
-    marginLeft: 260,
-    borderRadius: 100,
-    padding: 10,
-    elevation: 2,
-    backgroundColor: "#d3edf7",
-  },
-  buttonTextStyle: {
-    color: "#898989",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
   pickText: {
     marginBottom: 10,
     color: "#898989",
@@ -343,3 +195,5 @@ PlanDetailScreen.propTypes = {
     }).isRequired,
   }).isRequired,
 };
+
+export default PlanDetailScreen;
