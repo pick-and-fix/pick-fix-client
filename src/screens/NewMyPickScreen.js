@@ -1,21 +1,24 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Dimensions, Image, Text } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import { StyleSheet, View, Dimensions, Text, Modal } from "react-native";
 import { useRecoilValue } from "recoil";
+import MapView, { Marker } from "react-native-maps";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import DropDownPicker from "react-native-dropdown-picker";
-import PropTypes from "prop-types";
 import * as ImagePicker from "expo-image-picker";
+import PropTypes from "prop-types";
 
 import getEnvVars from "../../environment";
+import { saveNewPick } from "../../util/api/myPick";
 import { userState } from "../states/userState";
 import { pickState } from "../states/pickState";
 import StyledButton from "../components/Button";
-import { saveNewPick } from "../../util/api/myPick";
+import StyledMarker from "../components/Marker";
+import MarkerModalDetail from "../components/MarkerModal";
+import MESSAGE from "../constants/message";
 
 const { REACT_NATIVE_ANDROID_GOOGLE_API_KEY } = getEnvVars();
 
-export default function NewMyPickScreen({ navigation }) {
+function NewMyPickScreen({ navigation }) {
   const user = useRecoilValue(userState);
   const userId = user.userId;
   const picks = useRecoilValue(pickState);
@@ -28,9 +31,11 @@ export default function NewMyPickScreen({ navigation }) {
   const [typeOpen, setTypeOpen] = useState(false);
   const [ratingValue, setRatingValue] = useState(null);
   const [typeValue, setTypeValue] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [clickedPick, setClickedPick] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
-  const onSaveButtonClick = async () => {
+  const handelSaveButtonClick = async () => {
     const newPick = {
       author: userId,
       name: restaurantName,
@@ -48,7 +53,7 @@ export default function NewMyPickScreen({ navigation }) {
         navigation.navigate("MyPicks");
       }
     } catch (err) {
-      alert("error");
+      alert(MESSAGE.ERROR);
     }
   };
 
@@ -65,8 +70,31 @@ export default function NewMyPickScreen({ navigation }) {
     }
   };
 
+  const handleMarkerClick = (pickId) => {
+    Object.entries(picks).map(([id, pick]) => {
+      if (pickId === id) {
+        setClickedPick(pick);
+        setModalVisible(true);
+      }
+    });
+  };
+
   return (
     <View style={styles.screenContainer}>
+      <Modal
+        animationType="fade"
+        visible={modalVisible}
+        transparent={true}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <MarkerModalDetail
+          onPressModal={setModalVisible}
+          modalVisible={modalVisible}
+          clickedPick={clickedPick}
+        />
+      </Modal>
       <GooglePlacesAutocomplete
         placeholder="Search"
         fetchDetails={true}
@@ -104,35 +132,7 @@ export default function NewMyPickScreen({ navigation }) {
           longitudeDelta: 0.01,
         }}
       >
-        {Object.entries(picks).map(([id, pick]) => {
-          const latitude = pick.location[0];
-          const longitude = pick.location[1];
-          let image;
-
-          switch (pick.type) {
-            case "meal":
-              image = require("../../assets/meal.png");
-              break;
-            case "pup":
-              image = require("../../assets/pup.png");
-              break;
-            case "cafe":
-              image = require("../../assets/cafe.png");
-              break;
-            default:
-              image = require("../../assets/pin.png");
-          }
-
-          return (
-            <Marker
-              key={id}
-              coordinate={{ latitude: latitude, longitude: longitude }}
-              title={pick.name}
-            >
-              <Image source={image} style={{ width: 30, height: 30 }} />
-            </Marker>
-          );
-        })}
+        <StyledMarker picks={picks} onPressMarker={handleMarkerClick} />
         <Marker
           coordinate={{
             latitude: Number(searchLatitude),
@@ -213,7 +213,7 @@ export default function NewMyPickScreen({ navigation }) {
           height={13}
           title="SAVE"
           size={20}
-          onPress={onSaveButtonClick}
+          onPress={handelSaveButtonClick}
         />
       </View>
     </View>
@@ -256,3 +256,5 @@ NewMyPickScreen.propTypes = {
     reset: PropTypes.func,
   }).isRequired,
 };
+
+export default NewMyPickScreen;

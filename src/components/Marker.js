@@ -1,13 +1,13 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Image } from "react-native";
 import { Marker } from "react-native-maps";
+import PropTypes from "prop-types";
 
-const StyledMarker = ({ plan, onPressMarker }) => {
+const StyledMarker = ({ picks, onPressMarker }) => {
   return (
     <>
-      {plan &&
-        Object.entries(plan?.picks).map(([id, pick]) => {
+      {picks &&
+        Object.entries(picks).map(([id, pick]) => {
           const latitude = pick.location[0];
           const longitude = pick.location[1];
           let image;
@@ -42,8 +42,8 @@ const StyledMarker = ({ plan, onPressMarker }) => {
 };
 
 StyledMarker.propTypes = {
-  plan: PropTypes.object,
-  onPressMarker: PropTypes.func.isRequired,
+  picks: PropTypes.object,
+  onPressMarker: PropTypes.func,
 };
 
 export default StyledMarker;

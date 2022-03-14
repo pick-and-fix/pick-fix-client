@@ -20,6 +20,7 @@ function PlanDetailScreen({ route }) {
   const [resultModalVisible, setResultModalVisible] = useState(false);
   const [clickedPick, setClickedPick] = useState(null);
   const [plan, setPlan] = useState(null);
+  const picks = plan?.picks;
 
   useEffect(() => {
     if (planList) {
@@ -90,7 +91,7 @@ function PlanDetailScreen({ route }) {
             longitudeDelta: 0.05,
           }}
         >
-          <StyledMarker plan={plan} onPressMarker={handleMarkerClick} />
+          <StyledMarker picks={picks} onPressMarker={handleMarkerClick} />
           <Marker
             title={plan?.place}
             coordinate={{

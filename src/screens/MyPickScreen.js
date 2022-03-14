@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Dimensions, Image, Modal } from "react-native";
+import { StyleSheet, View, Dimensions, Modal } from "react-native";
 import { useRecoilState, useRecoilValue } from "recoil";
-import MapView, { Marker } from "react-native-maps";
+import MapView from "react-native-maps";
 import PropTypes from "prop-types";
 
 import { getMyPicks } from "../../util/api/myPick";
@@ -10,6 +10,7 @@ import { pickState } from "../states/pickState";
 import NewButton from "../components/Button";
 import MarkerModalDetail from "../components/MarkerModal";
 import MESSAGE from "../constants/message";
+import StyledMarker from "../components/Marker";
 
 function MyPickScreen({ navigation }) {
   const user = useRecoilValue(userState);
@@ -72,36 +73,7 @@ function MyPickScreen({ navigation }) {
             longitudeDelta: 0.05,
           }}
         >
-          {Object.entries(picks).map(([id, pick]) => {
-            const latitude = pick.location[0];
-            const longitude = pick.location[1];
-            let image;
-
-            switch (pick.type) {
-              case "meal":
-                image = require("../../assets/meal.png");
-                break;
-              case "pup":
-                image = require("../../assets/pup.png");
-                break;
-              case "cafe":
-                image = require("../../assets/cafe.png");
-                break;
-              default:
-                image = require("../../assets/pin.png");
-            }
-
-            return (
-              <Marker
-                key={id}
-                coordinate={{ latitude: latitude, longitude: longitude }}
-                title={pick.name}
-                onPress={(ev) => handleMarkerClick(id)}
-              >
-                <Image source={image} style={{ width: 30, height: 30 }} />
-              </Marker>
-            );
-          })}
+          <StyledMarker picks={picks} onPressMarker={handleMarkerClick} />
         </MapView>
       </View>
       <View style={styles.buttonContainer}>
