@@ -5,11 +5,12 @@ import { useRecoilValue } from "recoil";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import DropDownPicker from "react-native-dropdown-picker";
 import PropTypes from "prop-types";
+import * as ImagePicker from "expo-image-picker";
 
 import getEnvVars from "../../environment";
 import { userState } from "../states/userState";
 import { pickState } from "../states/pickState";
-import SaveButton from "../components/Button";
+import StyledButton from "../components/Button";
 import { saveNewPick } from "../../util/api/myPick";
 
 const { REACT_NATIVE_ANDROID_GOOGLE_API_KEY } = getEnvVars();
@@ -27,6 +28,7 @@ export default function NewMyPickScreen({ navigation }) {
   const [typeOpen, setTypeOpen] = useState(false);
   const [ratingValue, setRatingValue] = useState(null);
   const [typeValue, setTypeValue] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
 
   const onSaveButtonClick = async () => {
     const newPick = {
@@ -47,6 +49,19 @@ export default function NewMyPickScreen({ navigation }) {
       }
     } catch (err) {
       alert("error");
+    }
+  };
+
+  const handleImageButtonClick = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setImageFile(result.uri);
     }
   };
 
@@ -157,7 +172,6 @@ export default function NewMyPickScreen({ navigation }) {
           style={{
             height: 30,
             marginTop: 10,
-            marginBottom: 10,
             borderColor: "#cdcecf",
           }}
         />
@@ -183,13 +197,20 @@ export default function NewMyPickScreen({ navigation }) {
           style={{
             height: 30,
             marginTop: 10,
-            marginBottom: 10,
+            marginBottom: 7,
             borderColor: "#cdcecf",
           }}
         />
-        <SaveButton
+        <StyledButton
           width={100}
-          height={17}
+          height={13}
+          title="IMAGE"
+          size={20}
+          onPress={handleImageButtonClick}
+        />
+        <StyledButton
+          width={100}
+          height={13}
           title="SAVE"
           size={20}
           onPress={onSaveButtonClick}

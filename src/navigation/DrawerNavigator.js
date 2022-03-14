@@ -3,6 +3,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import { MainStack, MyPickStack, VoteStack } from "./StackNavigator";
 import MakeAPlanScreen from "../screens/MakeAPlanScreen";
+import LogoutScreen from "../screens/LogoutScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -37,6 +38,11 @@ const DrawerNavigator = () => {
         name="PickVote"
         component={VoteStack}
         options={{ drawerLabel: "Vote List" }}
+      />
+      <Drawer.Screen
+        name="Logout"
+        component={LogoutScreen}
+        options={{ drawerLabel: "Logout" }}
       />
     </Drawer.Navigator>
   );

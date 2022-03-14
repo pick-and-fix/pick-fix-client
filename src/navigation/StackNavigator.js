@@ -29,18 +29,31 @@ export const MainStack = () => {
   }, []);
 
   return (
-    <Main.Navigator initialRouteName={user ? "PlanList" : "Login"}>
-      <Main.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{ headerShown: false }}
-      />
-      <Main.Screen
-        name="PlanList"
-        component={PlanListScreen}
-        options={{ headerShown: false }}
-      />
-      <Main.Screen name="PlanDetail" component={PlanDetailScreen} />
+    <Main.Navigator>
+      {!user ? (
+        <>
+          <Main.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Main.Screen
+            name="PlanList"
+            component={PlanListScreen}
+            options={{ headerShown: false }}
+          />
+          <Main.Screen name="PlanDetail" component={PlanDetailScreen} />
+        </>
+      ) : (
+        <>
+          <Main.Screen
+            name="PlanList"
+            component={PlanListScreen}
+            options={{ headerShown: false }}
+          />
+          <Main.Screen name="PlanDetail" component={PlanDetailScreen} />
+        </>
+      )}
     </Main.Navigator>
   );
 };

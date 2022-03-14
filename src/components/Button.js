@@ -8,8 +8,11 @@ const ButtonContainer = styled.Pressable`
   justify-content: center;
   width: ${(props) => props.width}%;
   height: ${(props) => props.height}%;
+  margin-top: 3px;
+  margin-bottom: 3px;
   border: 1px solid #898989;
   border-radius: 15px;
+  background-color: #ffffff;
 `;
 
 const StyledText = styled.Text`

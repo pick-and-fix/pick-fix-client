@@ -15,6 +15,7 @@ import MapView, { Marker } from "react-native-maps";
 import PropTypes from "prop-types";
 
 import StyledButton from "../components/Button";
+import Loading from "../components/Loading";
 
 export default function PlanDetailScreen({ route }) {
   const planId = route.params.planId;
@@ -53,186 +54,188 @@ export default function PlanDetailScreen({ route }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Modal
-        animationType="fade"
-        visible={modalVisible}
-        transparent={true}
-        onRequestClose={() => {
-          setResultModalVisible(!resultModalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Pressable
-              style={styles.button}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.buttonTextStyle}>X</Text>
-            </Pressable>
-            <ScrollView>
-              {plan &&
-                plan.voting.map((votes) => {
-                  const places = votes.vote;
-                  return (
-                    <View key={votes.id} style={{ margin: 10 }}>
-                      <Text>
-                        ✅
-                        {places.map((place) => {
-                          return (
-                            <Text
-                              key={place.id}
-                              style={{ fontSize: 20, paddingRight: 20 }}
-                            >
-                              {place.info.name}
-                            </Text>
-                          );
-                        })}
-                      </Text>
-                    </View>
-                  );
-                })}
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
-      <Modal
-        animationType="fade"
-        visible={modalVisible}
-        transparent={true}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Pressable
-              style={styles.button}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.buttonTextStyle}>X</Text>
-            </Pressable>
-            <ScrollView>
-              <Text style={styles.pickText}>
-                <Text style={styles.formText}>Name: </Text>
-                {clickedPick?.name}
-              </Text>
-              <Text style={styles.pickText}>
-                <Text style={styles.formText}>Address: </Text>
-                {clickedPick?.address}
-              </Text>
-              <Text style={styles.pickText}>
-                <Text style={styles.formText}>Rating: </Text>
-                {clickedPick?.rating}
-              </Text>
-              <Text style={styles.pickText}>
-                <Text style={styles.formText}>Type: </Text>
-                {clickedPick?.type}
-              </Text>
-              {clickedPick?.image ? (
-                <Image
-                  source={{
-                    uri: clickedPick?.image,
-                  }}
-                  style={{ width: 290, height: 200 }}
-                />
-              ) : (
-                <Text> </Text>
-              )}
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: plan?.placeLocation[0],
-          longitude: plan?.placeLocation[1],
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
-        }}
-      >
-        {plan &&
-          Object.entries(plan?.picks).map(([id, pick]) => {
-            const latitude = pick.location[0];
-            const longitude = pick.location[1];
-            let image;
-
-            switch (pick.type) {
-              case "meal":
-                image = require("../../assets/meal.png");
-                break;
-              case "pup":
-                image = require("../../assets/pup.png");
-                break;
-              case "cafe":
-                image = require("../../assets/cafe.png");
-                break;
-              default:
-                image = require("../../assets/pin.png");
-            }
-
-            return (
-              <Marker
-                key={id}
-                coordinate={{ latitude: latitude, longitude: longitude }}
-                title={pick.name}
-                onPress={(ev) => handleMarkerClick(id)}
+    <React.Suspense fallback={<Loading />}>
+      <View style={styles.container}>
+        <Modal
+          animationType="fade"
+          visible={modalVisible}
+          transparent={true}
+          onRequestClose={() => {
+            setResultModalVisible(!resultModalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Pressable
+                style={styles.button}
+                onPress={() => setModalVisible(!modalVisible)}
               >
-                <Image source={image} style={{ width: 30, height: 30 }} />
-              </Marker>
-            );
-          })}
-        <Marker
-          coordinate={{
+                <Text style={styles.buttonTextStyle}>X</Text>
+              </Pressable>
+              <ScrollView>
+                {plan &&
+                  plan.voting.map((votes) => {
+                    const places = votes.vote;
+                    return (
+                      <View key={votes.id} style={{ margin: 10 }}>
+                        <Text>
+                          ✅
+                          {places.map((place) => {
+                            return (
+                              <Text
+                                key={place.id}
+                                style={{ fontSize: 20, paddingRight: 20 }}
+                              >
+                                {place.info.name}
+                              </Text>
+                            );
+                          })}
+                        </Text>
+                      </View>
+                    );
+                  })}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          animationType="fade"
+          visible={modalVisible}
+          transparent={true}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Pressable
+                style={styles.button}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={styles.buttonTextStyle}>X</Text>
+              </Pressable>
+              <ScrollView>
+                <Text style={styles.pickText}>
+                  <Text style={styles.formText}>Name: </Text>
+                  {clickedPick?.name}
+                </Text>
+                <Text style={styles.pickText}>
+                  <Text style={styles.formText}>Address: </Text>
+                  {clickedPick?.address}
+                </Text>
+                <Text style={styles.pickText}>
+                  <Text style={styles.formText}>Rating: </Text>
+                  {clickedPick?.rating}
+                </Text>
+                <Text style={styles.pickText}>
+                  <Text style={styles.formText}>Type: </Text>
+                  {clickedPick?.type}
+                </Text>
+                {clickedPick?.image ? (
+                  <Image
+                    source={{
+                      uri: clickedPick?.image,
+                    }}
+                    style={{ width: 290, height: 200 }}
+                  />
+                ) : (
+                  <Text> </Text>
+                )}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
+        <MapView
+          style={styles.map}
+          initialRegion={{
             latitude: plan?.placeLocation[0],
             longitude: plan?.placeLocation[1],
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
           }}
-        />
-      </MapView>
-      <View style={styles.planDetailContainer}>
-        <View style={styles.inlineContainer}>
-          <View style={styles.dot} />
-          <Text style={styles.formText}>Date</Text>
-          <Text>{`${year}. ${month}. ${day}. ${time}`}</Text>
-        </View>
-        <View style={styles.inlineContainer}>
-          <View style={styles.dot} />
-          <Text style={styles.formText}>Place</Text>
-          <Text style={styles.formText}>{plan?.place}</Text>
-        </View>
-        <View style={styles.inlineContainer}>
-          <View style={styles.dot} />
-          <Text style={styles.formText}>With</Text>
-          <View style={{ flexDirection: "row" }}>
-            {plan?.friends.map((friend) => (
-              <Text key={friend._id} style={{ marginRight: 3 }}>
-                {friend.name}
-              </Text>
-            ))}
+        >
+          {plan &&
+            Object.entries(plan?.picks).map(([id, pick]) => {
+              const latitude = pick.location[0];
+              const longitude = pick.location[1];
+              let image;
+
+              switch (pick.type) {
+                case "meal":
+                  image = require("../../assets/meal.png");
+                  break;
+                case "pup":
+                  image = require("../../assets/pup.png");
+                  break;
+                case "cafe":
+                  image = require("../../assets/cafe.png");
+                  break;
+                default:
+                  image = require("../../assets/pin.png");
+              }
+
+              return (
+                <Marker
+                  key={id}
+                  coordinate={{ latitude: latitude, longitude: longitude }}
+                  title={pick.name}
+                  onPress={(ev) => handleMarkerClick(id)}
+                >
+                  <Image source={image} style={{ width: 30, height: 30 }} />
+                </Marker>
+              );
+            })}
+          <Marker
+            coordinate={{
+              latitude: plan?.placeLocation[0],
+              longitude: plan?.placeLocation[1],
+            }}
+          />
+        </MapView>
+        <View style={styles.planDetailContainer}>
+          <View style={styles.inlineContainer}>
+            <View style={styles.dot} />
+            <Text style={styles.formText}>Date</Text>
+            <Text>{`${year}. ${month}. ${day}. ${time}`}</Text>
+          </View>
+          <View style={styles.inlineContainer}>
+            <View style={styles.dot} />
+            <Text style={styles.formText}>Place</Text>
+            <Text>{plan?.place}</Text>
+          </View>
+          <View style={styles.inlineContainer}>
+            <View style={styles.dot} />
+            <Text style={styles.formText}>With</Text>
+            <View style={{ flexDirection: "row" }}>
+              {plan?.friends.map((friend) => (
+                <Text key={friend._id} style={{ marginRight: 3 }}>
+                  {friend.name}
+                </Text>
+              ))}
+            </View>
+          </View>
+          <View style={styles.inlineContainer}>
+            <View style={styles.dot} />
+            <Text style={styles.formText}>Voting</Text>
+            <StyledButton
+              width={20}
+              height={50}
+              title="RESULT"
+              size={13}
+              onPress={handleResultButtonClick}
+            />
+          </View>
+          <View style={styles.inlineContainer}>
+            <View style={styles.dot} />
+            <Text style={styles.formText}>Pick</Text>
+            {plan &&
+              Object.entries(plan.picks).map(([id, pick]) => {
+                return <Text key={id}>📍 {pick.name} </Text>;
+              })}
           </View>
         </View>
-        <View style={styles.inlineContainer}>
-          <View style={styles.dot} />
-          <Text style={styles.formText}>Voting</Text>
-          <StyledButton
-            width={20}
-            height={50}
-            title="RESULT"
-            size={13}
-            onPress={handleResultButtonClick}
-          />
-        </View>
-        <View style={styles.inlineContainer}>
-          <View style={styles.dot} />
-          <Text style={styles.formText}>Pick</Text>
-          {plan &&
-            Object.entries(plan.picks).map(([id, pick]) => {
-              return <Text key={id}>📍 {pick.name} </Text>;
-            })}
-        </View>
       </View>
-    </View>
+    </React.Suspense>
   );
 }
 
