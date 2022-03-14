@@ -16,15 +16,15 @@ const Main = createStackNavigator();
 export const MainStack = () => {
   const [user, setUser] = useState("");
 
-  const checkUser = async () => {
-    const userId = await asyncStorage.getItem("userId");
-
-    if (userId) {
-      setUser(userId);
-    }
-  };
-
   useEffect(() => {
+    const checkUser = async () => {
+      const userId = await asyncStorage.getItem("userId");
+
+      if (userId) {
+        setUser(userId);
+      }
+    };
+
     checkUser();
   }, []);
 

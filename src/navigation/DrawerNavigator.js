@@ -2,7 +2,7 @@ import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import { MainStack, MyPickStack, VoteStack } from "./StackNavigator";
-import MakeAPlanScreen from "../screens/MakeAPlanScreen";
+import MakeAPlanScreen from "../screens/MakeAPlanScreen/MakeAPlanScreen";
 import LogoutScreen from "../screens/LogoutScreen";
 
 const Drawer = createDrawerNavigator();

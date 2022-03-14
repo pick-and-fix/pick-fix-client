@@ -154,7 +154,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#fff",
   },
-
   map: {
     width: Dimensions.get("window").width,
     height: 300,

@@ -91,7 +91,7 @@ function MyPickScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 2,
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height,
   },
   buttonContainer: {
-    flex: 1,
+    height: "18%",
     alignItems: "center",
     justifyContent: "center",
     marginTop: 240,

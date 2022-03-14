@@ -15,6 +15,7 @@ import StyledButton from "../components/Button";
 import StyledMarker from "../components/Marker";
 import MarkerModalDetail from "../components/MarkerModal";
 import MESSAGE from "../constants/message";
+import { CommonActions } from "@react-navigation/routers";
 
 const { REACT_NATIVE_ANDROID_GOOGLE_API_KEY } = getEnvVars();
 
@@ -47,10 +48,18 @@ function NewMyPickScreen({ navigation }) {
     };
 
     try {
-      const res = await saveNewPick({ userId, newPick });
-
-      if (res.result === "success") {
-        navigation.navigate("MyPicks");
+      const response = await saveNewPick({ userId, newPick });
+      if (response.result === "success") {
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [
+              {
+                name: "MyPicks",
+              },
+            ],
+          })
+        );
       }
     } catch (err) {
       alert(MESSAGE.ERROR);
@@ -253,6 +262,7 @@ const styles = StyleSheet.create({
 NewMyPickScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
+    dispatch: PropTypes.func,
     reset: PropTypes.func,
   }).isRequired,
 };
