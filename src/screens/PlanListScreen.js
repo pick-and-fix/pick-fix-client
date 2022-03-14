@@ -1,31 +1,59 @@
 import React, { useEffect } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
 import { StyleSheet, Text, View } from "react-native";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import asyncStorage from "@react-native-async-storage/async-storage";
 import PropTypes from "prop-types";
 
+import { getUserInfoApi } from "../../util/api/user";
 import { getPlanList } from "../../util/api/planList";
 import { userState } from "../states/userState";
 import { planState } from "../states/planState";
 import PlanList from "../components/List";
+import axios from "../config/axiosConfig";
+import Loading from "../components/Loading";
+import MESSAGE from "../constants/message";
 
 export default function PlanListScreen({ navigation }) {
-  const user = useRecoilValue(userState);
+  const setUser = useSetRecoilState(userState);
   const [plans, setPlans] = useRecoilState(planState);
+
+  useEffect(() => {
+    const checkAccessToken = async () => {
+      try {
+        const accessToken = await asyncStorage.getItem("accessToken");
+        const userId = await asyncStorage.getItem("userId");
+
+        if (!userId) return;
+
+        if (userId) {
+          const userInfo = await getUserInfoApi(userId);
+
+          axios.defaults.headers.Authorization = `Bearer ${accessToken}`;
+
+          setUser({
+            email: userInfo.email,
+            name: userInfo.name,
+            userId: userId,
+          });
+        }
+      } catch (err) {
+        alert(MESSAGE.ERROR);
+      }
+    };
+
+    checkAccessToken();
+  }, []);
 
   useEffect(() => {
     const getPlans = async () => {
       try {
-        const planList = await getPlanList(user.userId);
+        const userId = await asyncStorage.getItem("userId");
+
+        const planList = await getPlanList(userId);
 
         setPlans(planList.data);
       } catch (err) {
         alert("error");
-        asyncStorage.clear();
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "Login" }],
-        });
       }
     };
 
@@ -38,15 +66,17 @@ export default function PlanListScreen({ navigation }) {
 
   return (
     <>
-      <View style={styles.container}>
-        <Text style={styles.title}>My Plan List</Text>
-      </View>
-      <PlanList
-        plans={plans}
-        onClickPlan={navigateDetailPage}
-        dotColor="#90b189"
-      />
-      <View style={styles.emptyContainer} />
+      <React.Suspense fallback={<Loading />}>
+        <View style={styles.container}>
+          <Text style={styles.title}>My Plan List</Text>
+        </View>
+        <PlanList
+          plans={plans}
+          onClickPlan={navigateDetailPage}
+          dotColor="#90b189"
+        />
+        <View style={styles.emptyContainer} />
+      </React.Suspense>
     </>
   );
 }
