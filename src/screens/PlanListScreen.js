@@ -12,6 +12,7 @@ import PlanList from "../components/List";
 import axios from "../config/axiosConfig";
 import Loading from "../components/Loading";
 import MESSAGE from "../constants/message";
+import SCREEN from "../constants/screen";
 
 export default function PlanListScreen({ navigation }) {
   const setUser = useSetRecoilState(userState);
@@ -49,7 +50,7 @@ export default function PlanListScreen({ navigation }) {
   }, []);
 
   const navigateDetailPage = (planId) => {
-    navigation.navigate("PlanDetail", { planId: planId });
+    navigation.navigate(SCREEN.PLAN_DETAIL_SCREEN, { planId: planId });
   };
 
   return (

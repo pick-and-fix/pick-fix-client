@@ -17,6 +17,8 @@ import { getLoginApi } from "../../util/api/user";
 import { firebaseConfig } from "../config/firebaseConfig";
 import { userState } from "../states/userState";
 import axios from "../config/axiosConfig";
+import MESSAGE from "../constants/message";
+import SCREEN from "../constants/screen";
 
 const { REACT_NATIVE_ANDROID_CLIENT_ID } = getEnvVars();
 
@@ -33,7 +35,7 @@ export default function LoginScreen({ navigation }) {
   });
 
   useEffect(() => {
-    if (response?.type === "success") {
+    if (response?.type === MESSAGE.SUCCESS) {
       const { id_token } = response.params;
       setFirebaseToken(id_token);
       const auth = getAuth();
@@ -57,7 +59,7 @@ export default function LoginScreen({ navigation }) {
         userId: userInfo.userId,
       });
 
-      navigation.navigate("PlanList");
+      navigation.navigate(SCREEN.PLAN_LIST_SCREEN);
     };
 
     getLogin();
@@ -86,9 +88,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   loginText: {
-    fontSize: 60,
-    color: "#0a80ae",
     marginBottom: "40%",
+    color: "#0a80ae",
+    fontSize: 60,
   },
   loginButton: {
     width: 80,

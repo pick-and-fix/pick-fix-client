@@ -11,6 +11,8 @@ import { pickState } from "../states/pickState";
 import { planState } from "../states/planState";
 import { userState } from "../states/userState";
 import { voteState } from "../states/voteState";
+import MESSAGE from "../constants/message";
+import SCREEN from "../constants/screen";
 
 function LogoutScreen({ navigation }) {
   const resetPickState = useResetRecoilState(pickState);
@@ -19,9 +21,9 @@ function LogoutScreen({ navigation }) {
   const restVoteState = useResetRecoilState(voteState);
 
   const handleLogoutButtonClick = () => {
-    Alert.alert("LOGOUT", "로그아웃하시겠습니까?", [
+    Alert.alert(MESSAGE.LOGOUT_ALERT_TITLE, MESSAGE.LOGOUT_ALERT, [
       {
-        text: "YES",
+        text: MESSAGE.ALERT_CHOICE_YES,
         onPress: async () => {
           await asyncStorage.removeItem("accessToken");
           await asyncStorage.removeItem("userId");
@@ -38,7 +40,7 @@ function LogoutScreen({ navigation }) {
               index: 1,
               routes: [
                 {
-                  name: "Main",
+                  name: SCREEN.MAIN_STACK_SCREEN,
                 },
               ],
             })
@@ -46,16 +48,14 @@ function LogoutScreen({ navigation }) {
         },
       },
       {
-        text: "NO",
+        text: MESSAGE.ALERT_CHOICE_NO,
       },
     ]);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={{ marginBottom: "45%", fontSize: 60, color: "#0a80ae" }}>
-        Logout
-      </Text>
+      <Text style={styles.logoutTitle}>Logout</Text>
       <StyledButton
         width={40}
         height={5}
@@ -73,6 +73,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#d3edf7",
+  },
+  logoutTitle: {
+    marginBottom: "45%",
+    fontSize: 60,
+    color: "#0a80ae",
   },
 });
 

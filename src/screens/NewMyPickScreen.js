@@ -16,6 +16,7 @@ import StyledMarker from "../components/Marker";
 import MarkerModalDetail from "../components/MarkerModal";
 import MESSAGE from "../constants/message";
 import { CommonActions } from "@react-navigation/routers";
+import SCREEN from "../constants/screen";
 
 const { REACT_NATIVE_ANDROID_GOOGLE_API_KEY } = getEnvVars();
 
@@ -49,13 +50,13 @@ function NewMyPickScreen({ navigation }) {
 
     try {
       const response = await saveNewPick({ userId, newPick });
-      if (response.result === "success") {
+      if (response.result === MESSAGE.SUCCESS) {
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
             routes: [
               {
-                name: "MyPicks",
+                name: SCREEN.MY_PICKS_SCREEN,
               },
             ],
           })

@@ -11,6 +11,7 @@ import NewButton from "../components/Button";
 import MarkerModalDetail from "../components/MarkerModal";
 import MESSAGE from "../constants/message";
 import StyledMarker from "../components/Marker";
+import SCREEN from "../constants/screen";
 
 function MyPickScreen({ navigation }) {
   const user = useRecoilValue(userState);
@@ -35,7 +36,7 @@ function MyPickScreen({ navigation }) {
   }, []);
 
   const handleNewButtonClick = (userId) => {
-    navigation.navigate("NewMyPick", { userId: userId });
+    navigation.navigate(SCREEN.NEW_MY_PICK_SCREEN, { userId: userId });
   };
 
   const handleMarkerClick = (pickId) => {
@@ -100,8 +101,8 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height,
   },
   buttonContainer: {
-    height: "18%",
     alignItems: "center",
+    height: "18%",
     justifyContent: "center",
     marginTop: 240,
     backgroundColor: "#fff",
