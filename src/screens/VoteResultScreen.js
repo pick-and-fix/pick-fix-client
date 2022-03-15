@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Modal, Pressable, Alert } from "react-native";
+import { StyleSheet, View, Text, Modal, Alert } from "react-native";
 import { CommonActions } from "@react-navigation/routers";
-import { ScrollView } from "react-native-gesture-handler";
 import { useRecoilValue } from "recoil";
 import PropTypes from "prop-types";
 
@@ -9,12 +8,15 @@ import { getVoteResultApi, saveFinalPickApi } from "../../util/api/vote";
 import { userState } from "../states/userState";
 import { voteState } from "../states/voteState";
 import StyledButton from "../components/Button";
+import MESSAGE from "../constants/message";
+import SCREEN from "../constants/screen";
+import ResultModalDetail from "../components/ResultModal";
 
 function VoteResultScreen({ route, navigation }) {
+  const planId = route.params.voteId;
   const user = useRecoilValue(userState);
   const userId = user.userId;
   const allPlan = useRecoilValue(voteState);
-  const planId = route.params.voteId;
 
   const [currentPlan, setCurrentPlan] = useState(null);
   const [vote, setVote] = useState(null);
@@ -33,11 +35,11 @@ function VoteResultScreen({ route, navigation }) {
       try {
         const voteResult = await getVoteResultApi({ userId, planId });
 
-        if (voteResult.data !== "ongoing") {
+        if (voteResult.data !== MESSAGE.ONGOING_STATUS) {
           setVote(voteResult.data);
         }
       } catch (err) {
-        alert("error");
+        alert(MESSAGE.ERROR);
       }
     };
 
@@ -45,8 +47,8 @@ function VoteResultScreen({ route, navigation }) {
   }, []);
 
   if (vote) {
-    vote.map((vote) => {
-      vote.vote.map((pick) => {
+    vote.map((votes) => {
+      votes.vote.map((pick) => {
         places.push(pick.info.name);
       });
     });
@@ -91,17 +93,17 @@ function VoteResultScreen({ route, navigation }) {
     try {
       const response = await saveFinalPickApi({ userId, planId, finalPicks });
 
-      if (response.result === "success") {
-        Alert.alert("Success👍🏻", "Fix된 약속을 Plan List에서 확인하세요!", [
+      if (response.result === MESSAGE.OK) {
+        Alert.alert(MESSAGE.SUCCESS_ALERT_TITLE, MESSAGE.FIX_SUCCESS_ALERT, [
           {
-            text: "OK",
+            text: MESSAGE.OK,
             onPress: () =>
               navigation.dispatch(
                 CommonActions.reset({
                   index: 0,
                   routes: [
                     {
-                      name: "VoteList",
+                      name: SCREEN.VOTE_LIST_SCREEN,
                     },
                   ],
                 })
@@ -110,7 +112,7 @@ function VoteResultScreen({ route, navigation }) {
         ]);
       }
     } catch (err) {
-      alert("error");
+      alert(MESSAGE.ERROR);
     }
   };
 
@@ -128,39 +130,11 @@ function VoteResultScreen({ route, navigation }) {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Pressable
-              style={styles.button}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text style={styles.buttonTextStyle}>X</Text>
-            </Pressable>
-            <ScrollView>
-              {vote &&
-                vote.map((votes) => {
-                  const places = votes.vote;
-                  return (
-                    <View key={votes.id} style={{ margin: 10 }}>
-                      <Text>
-                        ✅
-                        {places.map((place) => {
-                          return (
-                            <Text
-                              key={place.id}
-                              style={{ fontSize: 20, paddingRight: 20 }}
-                            >
-                              {place.info.name}
-                            </Text>
-                          );
-                        })}
-                      </Text>
-                    </View>
-                  );
-                })}
-            </ScrollView>
-          </View>
-        </View>
+        <ResultModalDetail
+          onPressModal={setModalVisible}
+          modalVisible={modalVisible}
+          vote={vote}
+        />
       </Modal>
       <View style={styles.planContainer}>
         <View style={styles.inlineContainer}>
@@ -203,15 +177,15 @@ function VoteResultScreen({ route, navigation }) {
           <View style={styles.dot} />
           <Text style={styles.formText}>Pick</Text>
           {vote ? (
-            <Text>
+            <View style={{ width: "75%" }}>
               {sortArray.map((name, index) => {
                 if (index === currentPlan?.pickNumber) {
                   return;
                 }
 
-                return <Text key={index}>{name[0]} </Text>;
+                return <Text key={index}>📍 {name[0]} </Text>;
               })}
-            </Text>
+            </View>
           ) : (
             <Text>투표가 진행중입니다</Text>
           )}
@@ -252,9 +226,10 @@ const styles = StyleSheet.create({
     marginTop: "10%",
   },
   inlineContainer: {
-    height: "15%",
-    flexDirection: "row",
     alignItems: "center",
+    flexDirection: "row",
+    width: "100%",
+    height: "15%",
     marginBottom: "1%",
   },
   friendContainer: {
@@ -278,43 +253,6 @@ const styles = StyleSheet.create({
     height: "20%",
     alignItems: "center",
     justifyContent: "space-evenly",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    width: 350,
-    height: 350,
-    margin: 20,
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    padding: 15,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    width: 40,
-    height: 40,
-    marginLeft: 260,
-    borderRadius: 100,
-    padding: 10,
-    elevation: 2,
-    backgroundColor: "#d3edf7",
-  },
-  buttonTextStyle: {
-    color: "#898989",
-    fontWeight: "bold",
-    textAlign: "center",
   },
 });
 

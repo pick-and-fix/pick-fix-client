@@ -21,6 +21,7 @@ function PlanDetailScreen({ route }) {
   const [clickedPick, setClickedPick] = useState(null);
   const [plan, setPlan] = useState(null);
   const picks = plan?.picks;
+  const vote = plan?.voting;
 
   useEffect(() => {
     if (planList) {
@@ -65,7 +66,7 @@ function PlanDetailScreen({ route }) {
           <ResultModalDetail
             onPressModal={setResultModalVisible}
             modalVisible={resultModalVisible}
-            plan={plan}
+            vote={vote}
           />
         </Modal>
         <Modal
@@ -176,13 +177,13 @@ const styles = StyleSheet.create({
   },
   planDetailContainer: {
     flex: 1,
-    marginTop: "5%",
     width: "90%",
+    marginTop: "5%",
   },
   inlineContainer: {
-    height: "15%",
-    flexDirection: "row",
     alignItems: "center",
+    flexDirection: "row",
+    height: "15%",
     marginBottom: "1%",
   },
   dot: {

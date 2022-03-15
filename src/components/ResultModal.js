@@ -2,7 +2,7 @@ import React from "react";
 import { Text, View, Pressable, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 
-const ResultModalDetail = ({ onPressModal, modalVisible, plan }) => {
+const ResultModalDetail = ({ onPressModal, modalVisible, vote }) => {
   return (
     <>
       <View style={styles.centeredView}>
@@ -13,16 +13,16 @@ const ResultModalDetail = ({ onPressModal, modalVisible, plan }) => {
           >
             <Text style={styles.buttonTextStyle}>X</Text>
           </Pressable>
+          <Text style={styles.modalTitle}>VOTE RESULT</Text>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>VOTE RESULT</Text>
-            {plan &&
-              plan.voting.map((votes) => {
+            {vote &&
+              vote.map((votes) => {
                 const places = votes.vote;
 
                 return (
                   <View key={votes.id} style={styles.voteResultContainer}>
-                    <Text>
-                      ✅
+                    <View style={styles.dot} />
+                    <View>
                       {places.map((place) => {
                         return (
                           <Text key={place.id} style={styles.voteResult}>
@@ -30,7 +30,7 @@ const ResultModalDetail = ({ onPressModal, modalVisible, plan }) => {
                           </Text>
                         );
                       })}
-                    </Text>
+                    </View>
                   </View>
                 );
               })}
@@ -49,13 +49,13 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   modalView: {
+    alignItems: "center",
     width: 350,
     height: 350,
     margin: 20,
     backgroundColor: "#fff",
     borderRadius: 20,
     padding: 15,
-    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -75,32 +75,44 @@ const styles = StyleSheet.create({
     backgroundColor: "#d3edf7",
   },
   buttonTextStyle: {
+    textAlign: "center",
     color: "#898989",
     fontWeight: "bold",
-    textAlign: "center",
   },
   modalContent: {
-    marginTop: "7%",
+    justifyContent: "center",
+    height: "65%",
+    marginTop: "3%",
   },
   modalTitle: {
-    marginBottom: "5%",
     textAlign: "center",
+    marginBottom: "3%",
     fontSize: 23,
     color: "#0a80ae",
   },
   voteResultContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     margin: 10,
   },
   voteResult: {
-    fontSize: 16,
     paddingRight: 20,
+    fontSize: 16,
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 100,
+    backgroundColor: "#90b189",
   },
 });
 
 ResultModalDetail.propTypes = {
   onPressModal: PropTypes.func.isRequired,
   modalVisible: PropTypes.bool.isRequired,
-  plan: PropTypes.object,
+  vote: PropTypes.array,
 };
 
 export default ResultModalDetail;
