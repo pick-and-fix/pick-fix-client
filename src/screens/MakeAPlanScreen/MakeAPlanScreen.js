@@ -111,7 +111,7 @@ function MakeAPlanScreen({ navigation }) {
                   index: 0,
                   routes: [
                     {
-                      name: SCREEN.VOTE_LIST_SCREEN,
+                      name: SCREEN.VOTE_STACK_SCREEN,
                     },
                   ],
                 })

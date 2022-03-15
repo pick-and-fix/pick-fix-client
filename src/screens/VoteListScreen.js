@@ -7,6 +7,8 @@ import { getVoteListApi } from "../../util/api/vote";
 import { userState } from "../states/userState";
 import { voteState } from "../states/voteState";
 import VoteList from "../components/List";
+import MESSAGE from "../constants/message";
+import SCREEN from "../constants/screen";
 
 export default function VoteListScreen({ navigation }) {
   const user = useRecoilValue(userState);
@@ -16,9 +18,10 @@ export default function VoteListScreen({ navigation }) {
     const getVoteList = async () => {
       try {
         const voteList = await getVoteListApi(user.userId);
+
         setVotes(voteList.data);
       } catch (err) {
-        alert("error");
+        alert(MESSAGE.ERROR);
       }
     };
 
@@ -29,7 +32,7 @@ export default function VoteListScreen({ navigation }) {
     Object.entries(votes).map(([id, plan]) => {
       if (voteId === id) {
         if (!plan.voting.length) {
-          navigation.navigate("Vote", { voteId: voteId });
+          navigation.navigate(SCREEN.VOTE_SCREEN, { voteId: voteId });
 
           return;
         }
@@ -39,13 +42,13 @@ export default function VoteListScreen({ navigation }) {
         });
 
         if (isNotVotedUser) {
-          navigation.navigate("Vote", { voteId: voteId });
+          navigation.navigate(SCREEN.VOTE_SCREEN, { voteId: voteId });
 
           return;
         }
 
         if (!isNotVotedUser) {
-          navigation.navigate("VoteResult", { voteId: voteId });
+          navigation.navigate(SCREEN.VOTE_RESULT_SCREEN, { voteId: voteId });
 
           return;
         }
