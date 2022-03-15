@@ -1,9 +1,9 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
-import { MainStack, MyPickStack, VoteStack } from "./StackNavigator";
 import MakeAPlanScreen from "../screens/MakeAPlanScreen/MakeAPlanScreen";
 import LogoutScreen from "../screens/LogoutScreen";
+import { MainStack, MyPickStack, VoteStack } from "./StackNavigator";
 
 const Drawer = createDrawerNavigator();
 
@@ -13,9 +13,9 @@ const DrawerNavigator = () => {
       screenOptions={{
         headerTitle: "PICK & FIX",
         headerTitleAlign: "center",
-        headerTintColor: "#0A80AE",
+        headerTintColor: "#0a80ae",
         headerStyle: {
-          backgroundColor: "#D3EDF7",
+          backgroundColor: "#d3edf7",
         },
       }}
     >

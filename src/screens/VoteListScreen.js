@@ -59,7 +59,9 @@ export default function VoteListScreen({ navigation }) {
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.title}>Vote List</Text>
+        <View style={styles.mainTextContainer}>
+          <Text style={styles.title}>Vote List</Text>
+        </View>
         <ScrollView>
           <VoteList
             plans={votes}
@@ -79,10 +81,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#fff",
   },
+  mainTextContainer: {
+    flex: 1,
+    marginTop: "10%",
+    paddingTop: 0,
+  },
   title: {
     flex: 1,
     color: "#0a80ae",
-    fontSize: 45,
+    fontSize: 40,
   },
 });
 

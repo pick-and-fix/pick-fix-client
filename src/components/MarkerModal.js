@@ -20,7 +20,7 @@ const MarkerModalDetail = ({ onPressModal, modalVisible, clickedPick }) => {
           >
             <Text style={styles.buttonTextStyle}>X</Text>
           </Pressable>
-          <ScrollView>
+          <ScrollView style={{ width: "90%", height: "90%" }}>
             <Text style={styles.pickText}>
               <Text style={styles.formText}>Name: </Text>
               {clickedPick?.name}

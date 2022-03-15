@@ -8,7 +8,7 @@ import PlanDetailScreen from "../screens/PlanDetailScreen";
 import MyPickScreen from "../screens/MyPickScreen";
 import NewMyPickScreen from "../screens/NewMyPickScreen";
 import VoteListScreen from "../screens/VoteListScreen";
-import VoteScreen from "../screens/VoteScreen";
+import VoteScreen from "../screens/VoteScreen/VoteScreen";
 import VoteResultScreen from "../screens/VoteResultScreen";
 
 const Main = createStackNavigator();
@@ -29,28 +29,20 @@ export const MainStack = () => {
   }, []);
 
   return (
-    <Main.Navigator>
+    <Main.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       {!user ? (
         <>
-          <Main.Screen
-            name="Login"
-            component={LoginScreen}
-            options={{ headerShown: false }}
-          />
-          <Main.Screen
-            name="PlanList"
-            component={PlanListScreen}
-            options={{ headerShown: false }}
-          />
+          <Main.Screen name="Login" component={LoginScreen} />
+          <Main.Screen name="PlanList" component={PlanListScreen} />
           <Main.Screen name="PlanDetail" component={PlanDetailScreen} />
         </>
       ) : (
         <>
-          <Main.Screen
-            name="PlanList"
-            component={PlanListScreen}
-            options={{ headerShown: false }}
-          />
+          <Main.Screen name="PlanList" component={PlanListScreen} />
           <Main.Screen name="PlanDetail" component={PlanDetailScreen} />
         </>
       )}
@@ -62,7 +54,12 @@ const MyPick = createStackNavigator();
 
 export const MyPickStack = () => {
   return (
-    <MyPick.Navigator initialRouteName="MyPicks">
+    <MyPick.Navigator
+      initialRouteName="MyPicks"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       <MyPick.Screen
         name="MyPicks"
         component={MyPickScreen}
@@ -81,7 +78,12 @@ const Vote = createStackNavigator();
 
 export const VoteStack = () => {
   return (
-    <Vote.Navigator initialRouteName="VoteList">
+    <Vote.Navigator
+      initialRouteName="VoteList"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       <Vote.Screen
         name="VoteList"
         component={VoteListScreen}
