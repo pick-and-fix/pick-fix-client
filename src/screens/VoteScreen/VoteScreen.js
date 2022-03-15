@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
-  StyleSheet,
   View,
   Text,
-  Dimensions,
   Image,
   Modal,
   Pressable,
@@ -11,19 +9,25 @@ import {
   Alert,
 } from "react-native";
 import { useRecoilValue } from "recoil";
-import MapView, { Marker } from "react-native-maps";
+import MapView from "react-native-maps";
 import { CommonActions } from "@react-navigation/routers";
 import PropTypes from "prop-types";
 
-import { getPicksApi, postVotePickApi } from "../../util/api/vote";
-import { getMyPicks } from "../../util/api/myPick";
-import VoteButton from "../components/Button";
-import { userState } from "../states/userState";
+import { getPicksApi, postVotePickApi } from "../../../util/api/vote";
+import { getMyPicks } from "../../../util/api/myPick";
+import VoteButton from "../../components/Button";
+import { userState } from "../../states/userState";
+import StyledMarker from "../../components/Marker";
+import MESSAGE from "../../constants/message";
+import SCREEN from "../../constants/screen";
+import { styles } from "./styles";
 
 function VoteScreen({ route, navigation }) {
+  const planId = route.params.voteId;
+
   const user = useRecoilValue(userState);
   const userId = user.userId;
-  const planId = route.params.voteId;
+
   const [clickedPick, setClickedPick] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [friendsPicks, setFriendsPicks] = useState(null);
@@ -41,7 +45,7 @@ function VoteScreen({ route, navigation }) {
         setMyPicks(myPicks.data);
         setPlace(picks.data.place);
       } catch (err) {
-        alert("error");
+        alert(MESSAGE.ERROR);
       }
     };
 
@@ -56,17 +60,17 @@ function VoteScreen({ route, navigation }) {
         vote,
       });
 
-      if (response.result === "success") {
-        Alert.alert("Success👍🏻", "투표가 완료되었습니다.", [
+      if (response.result === MESSAGE.SUCCESS) {
+        Alert.alert(MESSAGE.SUCCESS_ALERT_TITLE, MESSAGE.VOTE_SUCCESS_ALERT, [
           {
-            text: "OK",
+            text: MESSAGE.OK,
             onPress: () =>
               navigation.dispatch(
                 CommonActions.reset({
                   index: 0,
                   routes: [
                     {
-                      name: "VoteList",
+                      name: SCREEN.VOTE_LIST_SCREEN,
                     },
                   ],
                 })
@@ -75,7 +79,7 @@ function VoteScreen({ route, navigation }) {
         ]);
       }
     } catch (err) {
-      alert("error");
+      alert(MESSAGE.ERROR);
     }
   };
 
@@ -106,7 +110,7 @@ function VoteScreen({ route, navigation }) {
     }
 
     if (!isNotDuplicate) {
-      alert("중복으로 투표할 수 없습니다❗️");
+      alert(MESSAGE.NOT_DUPLICATE_VOTE_ALERT);
     }
   };
   return (
@@ -177,84 +181,22 @@ function VoteScreen({ route, navigation }) {
             longitudeDelta: 0.01,
           }}
         >
-          {friendsPicks &&
-            Object.entries(friendsPicks).map(([id, pick]) => {
-              const latitude = pick.location[0];
-              const longitude = pick.location[1];
-              let image;
-
-              switch (pick.type) {
-                case "meal":
-                  image = require("../../assets/meal.png");
-                  break;
-                case "pup":
-                  image = require("../../assets/pup.png");
-                  break;
-                case "cafe":
-                  image = require("../../assets/cafe.png");
-                  break;
-                default:
-                  image = require("../../assets/pin.png");
-              }
-
-              return (
-                <Marker
-                  key={id}
-                  coordinate={{ latitude: latitude, longitude: longitude }}
-                  title={pick.name}
-                  onPress={(ev) => handleMarkerClick(id)}
-                >
-                  <Image source={image} style={{ width: 30, height: 30 }} />
-                </Marker>
-              );
-            })}
-          {myPicks &&
-            Object.entries(myPicks).map(([id, pick]) => {
-              const latitude = pick.location[0];
-              const longitude = pick.location[1];
-              let image;
-
-              switch (pick.type) {
-                case "meal":
-                  image = require("../../assets/meal.png");
-                  break;
-                case "pup":
-                  image = require("../../assets/pup.png");
-                  break;
-                case "cafe":
-                  image = require("../../assets/cafe.png");
-                  break;
-                default:
-                  image = require("../../assets/pin.png");
-              }
-
-              return (
-                <Marker
-                  key={id}
-                  coordinate={{ latitude: latitude, longitude: longitude }}
-                  title={pick.name}
-                  onPress={(ev) => handleMarkerClick(id)}
-                >
-                  <Image source={image} style={{ width: 30, height: 30 }} />
-                </Marker>
-              );
-            })}
+          <StyledMarker
+            picks={friendsPicks}
+            onPressMarker={handleMarkerClick}
+          />
+          <StyledMarker picks={myPicks} onPressMarker={handleMarkerClick} />
         </MapView>
         <View style={styles.pickContainer}>
-          <Text style={{ marginTop: 10, fontSize: 30, color: "#0a80ae" }}>
-            MY PICK
-          </Text>
-          <Text style={{ color: "#CFCFCF" }}>
+          <Text style={styles.pickContainerTitle}>MY PICK</Text>
+          <Text style={styles.notification}>
             가고싶은 장소의 마커를 클릭해서 투표해주세요
           </Text>
-          <View style={{ marginTop: "3%" }}>
+          <View style={styles.pickNameContainer}>
             {vote &&
               vote.map((pick) => {
                 return (
-                  <Text
-                    key={pick.id}
-                    style={{ fontSize: 15, marginBottom: "1%" }}
-                  >
+                  <Text key={pick.id} style={styles.pickName}>
                     ✅ {pick.info.name}
                   </Text>
                 );
@@ -272,85 +214,6 @@ function VoteScreen({ route, navigation }) {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingBottom: 16,
-    backgroundColor: "#fff",
-  },
-  map: {
-    width: Dimensions.get("window").width,
-    height: 300,
-  },
-  buttonContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 240,
-    backgroundColor: "#fff",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    width: 350,
-    height: 350,
-    margin: 20,
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    padding: 15,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalButtonContainer: {
-    flex: 1,
-    width: "100%",
-    height: 70,
-    alignItems: "center",
-    marginTop: "3%",
-  },
-  button: {
-    width: 40,
-    height: 40,
-    marginLeft: 260,
-    borderRadius: 100,
-    padding: 10,
-    elevation: 2,
-    backgroundColor: "#d3edf7",
-  },
-  buttonTextStyle: {
-    color: "#898989",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  pickText: {
-    marginBottom: 10,
-    color: "#898989",
-  },
-  formText: {
-    fontSize: 15,
-    color: "#0a80ae",
-  },
-  pickContainer: {
-    flex: 1,
-    alignItems: "center",
-    width: "100%",
-    backgroundColor: "#fff",
-  },
-});
 
 VoteScreen.propTypes = {
   route: PropTypes.shape({

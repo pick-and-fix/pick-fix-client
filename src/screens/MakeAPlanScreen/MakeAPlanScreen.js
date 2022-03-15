@@ -1,23 +1,27 @@
-import { CommonActions } from "@react-navigation/routers";
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Platform, Alert } from "react-native";
+import { View, Text, Platform, Alert } from "react-native";
+import { useRecoilValue } from "recoil";
+import { CommonActions } from "@react-navigation/routers";
 import DropDownPicker from "react-native-dropdown-picker";
 import { TextInput } from "react-native-gesture-handler";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { useRecoilValue } from "recoil";
 import PropTypes from "prop-types";
 
-import getEnvVars from "../../environment";
-import { checkEmailApi, makeAPlanApi } from "../../util/api/makeAPlan";
-import StyledButton from "../components/Button";
-import PlanDate from "../components/Date";
-import { userState } from "../states/userState";
+import { checkEmailApi, makeAPlanApi } from "../../../util/api/makeAPlan";
+import getEnvVars from "../../../environment";
+import StyledButton from "../../components/Button";
+import PlanDate from "../../components/Date";
+import { userState } from "../../states/userState";
+import MESSAGE from "../../constants/message";
+import SCREEN from "../../constants/screen";
+import { styles } from "./styles";
 
 const { REACT_NATIVE_ANDROID_GOOGLE_API_KEY } = getEnvVars();
 
 function MakeAPlanScreen({ navigation }) {
   const user = useRecoilValue(userState);
   const userId = user.userId;
+
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
@@ -56,25 +60,25 @@ function MakeAPlanScreen({ navigation }) {
       setFriends([...friends, user.data.name]);
       setEmail("");
     } catch (err) {
-      alert("please check the email");
+      alert(MESSAGE.NOT_FOUND_EMAIL_ERROR);
     }
   };
 
   const handleCreateButtonClick = async () => {
     if (!place) {
-      alert("Select the place");
+      alert(MESSAGE.PLACE_EMPTY_ERROR);
 
       return;
     }
 
     if (!pickValue) {
-      alert("Select the pick number");
+      alert(MESSAGE.PICK_NUMBER_EMPTY_ERROR);
 
       return;
     }
 
     if (!friends.length) {
-      alert("Check the friends email");
+      alert(MESSAGE.EMAIL_EMPTY_ERROR);
 
       return;
     }
@@ -94,23 +98,27 @@ function MakeAPlanScreen({ navigation }) {
 
     const response = await makeAPlanApi({ userId, newPlan });
 
-    if (response.result === "success") {
-      Alert.alert("Success👍🏻", "Vote List에서 약속장소를 Pick하세요!", [
-        {
-          text: "OK",
-          onPress: () =>
-            navigation.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [
-                  {
-                    name: "PickVote",
-                  },
-                ],
-              })
-            ),
-        },
-      ]);
+    if (response.result === MESSAGE.SUCCESS) {
+      Alert.alert(
+        MESSAGE.SUCCESS_ALERT_TITLE,
+        MESSAGE.MAKE_A_PLAN_SUCCESS_ALERT,
+        [
+          {
+            text: MESSAGE.OK,
+            onPress: () =>
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [
+                    {
+                      name: SCREEN.VOTE_STACK_SCREEN,
+                    },
+                  ],
+                })
+              ),
+          },
+        ]
+      );
     }
   };
 
@@ -235,57 +243,6 @@ function MakeAPlanScreen({ navigation }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#fff",
-  },
-  mainTextContainer: {
-    flex: 1,
-    marginTop: "10%",
-    paddingTop: 0,
-  },
-  title: {
-    color: "#0A80AE",
-    fontSize: 40,
-  },
-  formContainer: {
-    flex: 7,
-    width: 350,
-    marginTop: "15%",
-  },
-  inlineContainer: {
-    height: "15%",
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: "1%",
-  },
-  circle: {
-    width: 10,
-    height: 10,
-    marginLeft: 10,
-    marginRight: 10,
-    borderRadius: 100,
-    backgroundColor: "#f6dced",
-  },
-  formText: {
-    color: "#0A80AE",
-    fontSize: 17,
-  },
-  friendTextInput: {
-    width: "77%",
-    borderBottomWidth: 1,
-  },
-  friendsContainer: {
-    marginLeft: "10%",
-    height: "45%",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-});
 
 MakeAPlanScreen.propTypes = {
   navigation: PropTypes.shape({

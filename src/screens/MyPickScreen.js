@@ -1,28 +1,23 @@
-import React, { useEffect } from "react";
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  Image,
-  Modal,
-  Pressable,
-  Text,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, Dimensions, Modal } from "react-native";
 import { useRecoilState, useRecoilValue } from "recoil";
+import MapView from "react-native-maps";
 import PropTypes from "prop-types";
-import MapView, { Marker } from "react-native-maps";
 
 import { getMyPicks } from "../../util/api/myPick";
 import { userState } from "../states/userState";
-import NewButton from "../components/Button";
 import { pickState } from "../states/pickState";
-import { useState } from "react/cjs/react.development";
-import { ScrollView } from "react-native-gesture-handler";
+import NewButton from "../components/Button";
+import MarkerModalDetail from "../components/MarkerModal";
+import MESSAGE from "../constants/message";
+import StyledMarker from "../components/Marker";
+import SCREEN from "../constants/screen";
 
 function MyPickScreen({ navigation }) {
   const user = useRecoilValue(userState);
   const userId = user.userId;
   const [picks, setPicks] = useRecoilState(pickState);
+
   const [clickedPick, setClickedPick] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -33,7 +28,7 @@ function MyPickScreen({ navigation }) {
 
         setPicks(myPicks.data);
       } catch (err) {
-        alert("error");
+        alert(MESSAGE.ERROR);
       }
     };
 
@@ -41,7 +36,7 @@ function MyPickScreen({ navigation }) {
   }, []);
 
   const handleNewButtonClick = (userId) => {
-    navigation.navigate("NewMyPick", { userId: userId });
+    navigation.navigate(SCREEN.NEW_MY_PICK_SCREEN, { userId: userId });
   };
 
   const handleMarkerClick = (pickId) => {
@@ -64,44 +59,11 @@ function MyPickScreen({ navigation }) {
             setModalVisible(!modalVisible);
           }}
         >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Pressable
-                style={styles.button}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={styles.buttonTextStyle}>X</Text>
-              </Pressable>
-              <ScrollView>
-                <Text style={styles.pickText}>
-                  <Text style={styles.formText}>Name: </Text>
-                  {clickedPick?.name}
-                </Text>
-                <Text style={styles.pickText}>
-                  <Text style={styles.formText}>Address: </Text>
-                  {clickedPick?.address}
-                </Text>
-                <Text style={styles.pickText}>
-                  <Text style={styles.formText}>Rating: </Text>
-                  {clickedPick?.rating}
-                </Text>
-                <Text style={styles.pickText}>
-                  <Text style={styles.formText}>Type: </Text>
-                  {clickedPick?.type}
-                </Text>
-                {clickedPick?.image ? (
-                  <Image
-                    source={{
-                      uri: clickedPick?.image,
-                    }}
-                    style={{ width: 290, height: 200 }}
-                  />
-                ) : (
-                  <Text> </Text>
-                )}
-              </ScrollView>
-            </View>
-          </View>
+          <MarkerModalDetail
+            onPressModal={setModalVisible}
+            modalVisible={modalVisible}
+            clickedPick={clickedPick}
+          />
         </Modal>
         <MapView
           style={styles.map}
@@ -112,36 +74,7 @@ function MyPickScreen({ navigation }) {
             longitudeDelta: 0.05,
           }}
         >
-          {Object.entries(picks).map(([id, pick]) => {
-            const latitude = pick.location[0];
-            const longitude = pick.location[1];
-            let image;
-
-            switch (pick.type) {
-              case "meal":
-                image = require("../../assets/meal.png");
-                break;
-              case "pup":
-                image = require("../../assets/pup.png");
-                break;
-              case "cafe":
-                image = require("../../assets/cafe.png");
-                break;
-              default:
-                image = require("../../assets/pin.png");
-            }
-
-            return (
-              <Marker
-                key={id}
-                coordinate={{ latitude: latitude, longitude: longitude }}
-                title={pick.name}
-                onPress={(ev) => handleMarkerClick(id)}
-              >
-                <Image source={image} style={{ width: 30, height: 30 }} />
-              </Marker>
-            );
-          })}
+          <StyledMarker picks={picks} onPressMarker={handleMarkerClick} />
         </MapView>
       </View>
       <View style={styles.buttonContainer}>
@@ -159,7 +92,7 @@ function MyPickScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 2,
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -168,56 +101,11 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height,
   },
   buttonContainer: {
-    flex: 1,
     alignItems: "center",
+    height: "18%",
     justifyContent: "center",
     marginTop: 240,
     backgroundColor: "#fff",
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    width: 350,
-    height: 350,
-    margin: 20,
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    padding: 15,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    width: 40,
-    height: 40,
-    marginLeft: 260,
-    borderRadius: 100,
-    padding: 10,
-    elevation: 2,
-    backgroundColor: "#d3edf7",
-  },
-  buttonTextStyle: {
-    color: "#898989",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  pickText: {
-    marginBottom: 10,
-    color: "#898989",
-  },
-  formText: {
-    fontSize: 15,
-    color: "#0a80ae",
   },
 });
 
