@@ -9,10 +9,12 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "prepare": "husky install",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "test": "jest"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "~1.15.0",
+    "@react-native-community/datetimepicker": "4.0.0",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/drawer": "^6.3.1",
     "@react-navigation/native": "^6.0.8",
@@ -23,6 +25,7 @@
     "expo-auth-session": "~3.5.0",
     "expo-constants": "~13.0.1",
     "expo-google-sign-in": "~10.1.0",
+    "expo-image-picker": "~12.0.1",
     "expo-random": "~12.1.1",
     "expo-status-bar": "~1.2.0",
     "expo-updates": "~0.11.6",
@@ -41,24 +44,30 @@
     "react-native-screens": "~3.10.1",
     "react-native-web": "0.17.1",
     "recoil": "^0.6.1",
-    "styled-components": "^5.3.3",
-    "@react-native-community/datetimepicker": "4.0.0",
-    "expo-image-picker": "~12.0.1"
+    "styled-components": "^5.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
+    "enzyme": "^3.11.0",
     "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.2",
     "husky": "^7.0.0",
+    "jest": "^27.5.1",
+    "jest-expo": "^44.0.1",
     "lint-staged": "^12.3.4",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "react-test-renderer": "^17.0.1"
   },
   "private": true,
   "lint-staged": {
     "*.js": [
       "eslint --fix"
     ]
+  },
+  "jest": {
+    "preset": "jest-expo"
   }
 }

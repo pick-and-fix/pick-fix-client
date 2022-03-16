@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components/native";
 
-const ButtonContainer = styled.Pressable`
+export const ButtonContainer = styled.Pressable`
   align-items: center;
   justify-content: center;
   width: ${(props) => props.width}%;
@@ -15,7 +15,7 @@ const ButtonContainer = styled.Pressable`
   background-color: #ffffff;
 `;
 
-const StyledText = styled.Text`
+export const StyledText = styled.Text`
   font-size: ${(props) => props.size};
   color: #0a80ae;
 `;

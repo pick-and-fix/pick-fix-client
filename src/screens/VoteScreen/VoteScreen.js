@@ -15,7 +15,7 @@ import PropTypes from "prop-types";
 
 import { getPicksApi, postVotePickApi } from "../../../util/api/vote";
 import { getMyPicks } from "../../../util/api/myPick";
-import VoteButton from "../../components/Button";
+import StyledButton from "../../components/Button";
 import { userState } from "../../states/userState";
 import StyledMarker from "../../components/Marker";
 import MESSAGE from "../../constants/message";
@@ -160,7 +160,7 @@ function VoteScreen({ route, navigation }) {
                   <Text> </Text>
                 )}
                 <View style={styles.modalButtonContainer}>
-                  <VoteButton
+                  <StyledButton
                     width={80}
                     height={50}
                     title="Pick"
@@ -203,7 +203,7 @@ function VoteScreen({ route, navigation }) {
               })}
           </View>
         </View>
-        <VoteButton
+        <StyledButton
           width={86}
           height={8}
           title="VOTE"
