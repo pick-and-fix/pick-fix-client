@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#fff",
   },
   map: {
     width: Dimensions.get("window").width,
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: "18%",
     justifyContent: "center",
-    marginTop: 240,
+    marginTop: "48%",
     backgroundColor: "#fff",
   },
 });

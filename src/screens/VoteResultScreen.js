@@ -96,14 +96,14 @@ function VoteResultScreen({ route, navigation }) {
       if (response.result === MESSAGE.OK) {
         Alert.alert(MESSAGE.SUCCESS_ALERT_TITLE, MESSAGE.FIX_SUCCESS_ALERT, [
           {
-            text: MESSAGE.OK,
+            text: MESSAGE.SUCCESS,
             onPress: () =>
               navigation.dispatch(
                 CommonActions.reset({
                   index: 0,
                   routes: [
                     {
-                      name: SCREEN.VOTE_LIST_SCREEN,
+                      name: SCREEN.MAIN_STACK_SCREEN,
                     },
                   ],
                 })

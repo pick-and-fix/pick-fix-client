@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, Platform, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Platform,
+  Alert,
+  KeyboardAvoidingView,
+} from "react-native";
 import { useRecoilValue } from "recoil";
 import { CommonActions } from "@react-navigation/routers";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -123,124 +129,126 @@ function MakeAPlanScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.mainTextContainer}>
-        <Text style={styles.title}>Make A Plan</Text>
-      </View>
-      <View style={styles.formContainer}>
-        <View style={styles.inlineContainer}>
-          <View style={styles.circle} />
-          <Text style={styles.formText}>Date</Text>
-          <PlanDate
-            onChange={onChange}
-            showDatepicker={showDatepicker}
-            showTimepicker={showTimepicker}
-            date={date}
-            mode={mode}
-            show={show}
-          />
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={"height"}>
+      <View style={styles.container}>
+        <View style={styles.mainTextContainer}>
+          <Text style={styles.title}>Make A Plan</Text>
         </View>
-        <View style={styles.inlineContainer}>
-          <View style={styles.circle} />
-          <Text style={styles.formText}>Place</Text>
-          <GooglePlacesAutocomplete
-            placeholder="Search"
-            fetchDetails={true}
-            onPress={(data, details = null) => {
-              setPlace(data.structured_formatting.main_text);
-              setLatitude(details.geometry.location.lat);
-              setLongitude(details.geometry.location.lng);
-            }}
-            query={{
-              key: REACT_NATIVE_ANDROID_GOOGLE_API_KEY,
-              language: "ko",
-            }}
-            styles={{
-              container: {
-                flex: 0,
-                position: "absolute",
-                marginLeft: 100,
-                width: "70%",
-                zIndex: 1,
-              },
-              textInput: {
-                backgroundColor: "#edf3fb",
-                color: "#000000",
-              },
-              listView: { backgroundColor: "#fff" },
-            }}
-            debounce={200}
-          />
-        </View>
-        <View style={styles.inlineContainer}>
-          <View style={styles.circle} />
-          <Text style={styles.formText}>Pick</Text>
-          <DropDownPicker
-            open={dropOpen}
-            value={pickValue}
-            placeholder="Pick Number"
-            items={[
-              { label: "1", value: "1" },
-              { label: "2", value: "2" },
-              { label: "3", value: "3" },
-              { label: "4", value: "4" },
-            ]}
-            setOpen={setDropOpen}
-            setValue={setPickValue}
-            zIndex={6000}
-            zIndexInverse={1000}
-            autoScroll={true}
-            listMode="MODAL"
-            modalTitle="Select Pick Number!"
-            modalProps={{
-              animation: "fade",
-            }}
-            style={{
-              marginLeft: "11%",
-              width: "69%",
-              height: 30,
-            }}
-          />
-        </View>
-        <View style={styles.inlineContainer}>
-          <View style={styles.circle} />
-          <Text style={styles.formText}>Friends</Text>
-          <View>
-            <View style={styles.friendsContainer}>
-              <TextInput
-                style={styles.friendTextInput}
-                placeholder="Your Friend Email"
-                value={email}
-                onChangeText={setEmail}
-              />
-              <View>
-                <StyledButton
-                  width={200}
-                  height={80}
-                  title="+"
-                  size={20}
-                  onPress={handlePlusButtonClick}
+        <View style={styles.formContainer}>
+          <View style={styles.inlineContainer}>
+            <View style={styles.circle} />
+            <Text style={styles.formText}>Date</Text>
+            <PlanDate
+              onChange={onChange}
+              showDatepicker={showDatepicker}
+              showTimepicker={showTimepicker}
+              date={date}
+              mode={mode}
+              show={show}
+            />
+          </View>
+          <View style={styles.inlineContainer}>
+            <View style={styles.circle} />
+            <Text style={styles.formText}>Place</Text>
+            <GooglePlacesAutocomplete
+              placeholder="Search"
+              fetchDetails={true}
+              onPress={(data, details = null) => {
+                setPlace(data.structured_formatting.main_text);
+                setLatitude(details.geometry.location.lat);
+                setLongitude(details.geometry.location.lng);
+              }}
+              query={{
+                key: REACT_NATIVE_ANDROID_GOOGLE_API_KEY,
+                language: "ko",
+              }}
+              styles={{
+                container: {
+                  flex: 0,
+                  position: "absolute",
+                  marginLeft: 100,
+                  width: "70%",
+                  zIndex: 1,
+                },
+                textInput: {
+                  backgroundColor: "#edf3fb",
+                  color: "#000000",
+                },
+                listView: { backgroundColor: "#fff" },
+              }}
+              debounce={200}
+            />
+          </View>
+          <View style={styles.inlineContainer}>
+            <View style={styles.circle} />
+            <Text style={styles.formText}>Pick</Text>
+            <DropDownPicker
+              open={dropOpen}
+              value={pickValue}
+              placeholder="Pick Number"
+              items={[
+                { label: "1", value: "1" },
+                { label: "2", value: "2" },
+                { label: "3", value: "3" },
+                { label: "4", value: "4" },
+              ]}
+              setOpen={setDropOpen}
+              setValue={setPickValue}
+              zIndex={6000}
+              zIndexInverse={1000}
+              autoScroll={true}
+              listMode="MODAL"
+              modalTitle="Select Pick Number!"
+              modalProps={{
+                animation: "fade",
+              }}
+              style={{
+                marginLeft: "11%",
+                width: "69%",
+                height: 30,
+              }}
+            />
+          </View>
+          <View style={styles.inlineContainer}>
+            <View style={styles.circle} />
+            <Text style={styles.formText}>Friends</Text>
+            <View>
+              <View style={styles.friendsContainer}>
+                <TextInput
+                  style={styles.friendTextInput}
+                  placeholder="Your Friend Email"
+                  value={email}
+                  onChangeText={setEmail}
                 />
+                <View>
+                  <StyledButton
+                    width={200}
+                    height={80}
+                    title="+"
+                    size={20}
+                    onPress={handlePlusButtonClick}
+                  />
+                </View>
+              </View>
+              <View style={styles.friendsContainer}>
+                {friends.map((friend, index) => {
+                  return <Text key={index}>@ {friend} </Text>;
+                })}
               </View>
             </View>
-            <View style={styles.friendsContainer}>
-              {friends.map((friend, index) => {
-                return <Text key={index}>@ {friend} </Text>;
-              })}
-            </View>
+          </View>
+          <View style={{ flex: 1, marginTop: "10%", alignItems: "center" }}>
+            <StyledButton
+              width={80}
+              height={30}
+              title="CREATE"
+              size={20}
+              onPress={handleCreateButtonClick}
+            />
           </View>
         </View>
-        <View style={{ flex: 1, marginTop: "10%", alignItems: "center" }}>
-          <StyledButton
-            width={80}
-            height={30}
-            title="CREATE"
-            size={20}
-            onPress={handleCreateButtonClick}
-          />
-        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
